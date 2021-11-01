@@ -1,4 +1,4 @@
-package bg.mycompany.eventbuddy.model;
+package bg.mycompany.eventbuddy.model.entity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
