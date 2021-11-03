@@ -2,6 +2,7 @@ package bg.mycompany.eventbuddy.model.entity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -22,10 +23,10 @@ public class Event extends BaseEntity {
     private LocalDateTime createdOn;
 
     @Column(name = "start_date_time", nullable = false)
-    private LocalDateTime startDateTime;
+    private LocalDate startDateTime;
 
     @Column(name = "end_date_time", nullable = false)
-    private LocalDateTime endDateTime;
+    private LocalDate endDateTime;
 
     @ManyToMany(mappedBy = "signedUpEvents")
     private Set<User> signedUpUsers;
@@ -68,19 +69,19 @@ public class Event extends BaseEntity {
         this.createdOn = createdOn;
     }
 
-    public LocalDateTime getStartDateTime() {
+    public LocalDate getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(LocalDateTime startDateTime) {
+    public void setStartDateTime(LocalDate startDateTime) {
         this.startDateTime = startDateTime;
     }
 
-    public LocalDateTime getEndDateTime() {
+    public LocalDate getEndDateTime() {
         return endDateTime;
     }
 
-    public void setEndDateTime(LocalDateTime endDateTime) {
+    public void setEndDateTime(LocalDate endDateTime) {
         this.endDateTime = endDateTime;
     }
 
