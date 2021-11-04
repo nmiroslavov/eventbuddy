@@ -1,6 +1,7 @@
 package bg.mycompany.eventbuddy.service.impl;
 
 import bg.mycompany.eventbuddy.model.entity.Event;
+import bg.mycompany.eventbuddy.model.service.EventAllServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventServiceModel;
 import bg.mycompany.eventbuddy.repository.EventRepository;
 import bg.mycompany.eventbuddy.sec.CurrentUser;
@@ -10,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -33,5 +35,15 @@ public class EventServiceImpl implements EventService {
         event.setCreator(userService.findById(currentUser.getId()));
 
         eventRepository.save(event);
+    }
+
+    @Override
+    public EventAllServiceModel getAllEvents() {
+        List<Event> allEvents = eventRepository.findAll();
+        EventAllServiceModel events = new EventAllServiceModel();
+        events.setEvents(allEvents);
+
+
+        return events;
     }
 }

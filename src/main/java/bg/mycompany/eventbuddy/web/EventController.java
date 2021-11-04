@@ -1,10 +1,12 @@
 package bg.mycompany.eventbuddy.web;
 
 import bg.mycompany.eventbuddy.model.binding.EventCreateBindingModel;
+import bg.mycompany.eventbuddy.model.service.EventAllServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventServiceModel;
 import bg.mycompany.eventbuddy.service.EventService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -51,8 +53,10 @@ public class EventController {
     }
 
     @GetMapping("/explore")
-    public String explore() {
+    public String explore(Model model) {
+        EventAllServiceModel events = eventService.getAllEvents();
+        model.addAttribute("events", events);
 
-        return "home";
+        return "explore";
     }
 }
