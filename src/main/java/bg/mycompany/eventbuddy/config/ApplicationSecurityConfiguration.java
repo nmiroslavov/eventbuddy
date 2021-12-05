@@ -32,8 +32,36 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                         requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll().
                 // the next line allows access to the home page, login page and registration for everyone
                         antMatchers("/", "/users/login", "/users/register", "/logger/**").permitAll().
+                // we permit the page below only for admin users
+                        antMatchers("/statistics").hasRole(RoleEnum.ADMIN.name()).
                 // next we forbid all other pages for unauthenticated users.
-                        antMatchers("/**").authenticated();
+                        antMatchers("/**").authenticated().
+                and().
+                // configure login with login HTML form with two input fileds
+                        formLogin().
+                // our login page is located at http://<serveraddress>>:<port>/users/login
+                        loginPage("/users/login").
+                // this is the name of the <input..> in the login form where the user enters her email/username/etc
+                // the value of this input will be presented to our User details service
+                // those that want to name the input field differently, e.g. email may change the value below
+                        usernameParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY).
+                // the name of the <input...> HTML filed that keeps the password
+                        passwordParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY).
+                // The place where we should land in case that the login is successful
+                        defaultSuccessUrl("/home").
+                // the place where I should land if the login is NOT successful
+                        failureForwardUrl("/users/login-error").
+                and().
+                logout().
+                // This is the URL which spring will implement for me and will log the user out.
+                        logoutUrl("/users/logout").
+                // where to go after the logout.
+                        logoutSuccessUrl("/").
+                // remove the session from server
+                        invalidateHttpSession(true).
+                //delete the cookie that references my session
+                        deleteCookies("JSESSIONID");
+
     }
 
     @Override
