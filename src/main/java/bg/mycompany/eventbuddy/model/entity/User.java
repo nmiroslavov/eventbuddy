@@ -1,26 +1,16 @@
 package bg.mycompany.eventbuddy.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity {
+
     @Column(name = "username", unique = true, nullable = false)
     private String username;
-
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-
-    @Column(name = "age", nullable = false)
-    private String age;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
@@ -28,11 +18,8 @@ public class User extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "registered_on", nullable = false)
-    private LocalDateTime registeredOn;
-
-    @ManyToMany
-    private Set<Event> signedUpEvents;
+    @OneToMany
+    Set<Role> roles;
 
     public User() {
     }
@@ -43,30 +30,6 @@ public class User extends BaseEntity {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
     }
 
     public String getEmail() {
@@ -85,19 +48,11 @@ public class User extends BaseEntity {
         this.password = password;
     }
 
-    public LocalDateTime getRegisteredOn() {
-        return registeredOn;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRegisteredOn(LocalDateTime registeredOn) {
-        this.registeredOn = registeredOn;
-    }
-
-    public Set<Event> getSignedUpEvents() {
-        return signedUpEvents;
-    }
-
-    public void setSignedUpEvents(Set<Event> signedUpEvents) {
-        this.signedUpEvents = signedUpEvents;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
