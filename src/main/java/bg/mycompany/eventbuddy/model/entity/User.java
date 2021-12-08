@@ -21,6 +21,21 @@ public class User extends BaseEntity {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @Column(name = "age", nullable = false)
+    private Integer age;
+
+    @Column(name = "profile_picture", nullable = false)
+    private String profilePicture;
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "attendees")
+    private Set<Event> hostedAndSignedEvents = new HashSet<>();
+
     public User() {
     }
 
@@ -54,5 +69,45 @@ public class User extends BaseEntity {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public Set<Event> getHostedAndSignedEvents() {
+        return hostedAndSignedEvents;
+    }
+
+    public void setHostedAndSignedEvents(Set<Event> hostedAndSignedEvents) {
+        this.hostedAndSignedEvents = hostedAndSignedEvents;
     }
 }

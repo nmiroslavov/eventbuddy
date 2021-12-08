@@ -23,7 +23,7 @@ public class Event extends BaseEntity {
     @ManyToOne
     private User creator;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<User> attendees = new HashSet<>();
 
     @ManyToOne
