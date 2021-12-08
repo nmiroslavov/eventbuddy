@@ -37,13 +37,26 @@ public class RegistrationController {
     public String registerUser(@Valid UserRegisterBindingModel userRegisterBindingModel,
                                BindingResult bindingResult,
                                RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors() ||
+        boolean problem = false;
+
+        if (userService.isUsernameTaken(userRegisterBindingModel.getUsername())) {
+            redirectAttributes.addFlashAttribute("usernameIsTaken", true);
+            problem = true;
+        }
+
+        if (userService.isEmailTaken(userRegisterBindingModel.getEmail())) {
+            redirectAttributes.addFlashAttribute("emailIsTaken", true);
+            problem = true;
+        }
+
+        if (bindingResult.hasErrors() || problem ||
                 !userRegisterBindingModel.getPassword().equals(userRegisterBindingModel.getMatchingPassword())) {
             redirectAttributes.addFlashAttribute("userRegisterBindingModel", userRegisterBindingModel);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userRegisterBindingModel", bindingResult);
 
             return "redirect:/users/register";
         }
+
 
         UserRegistrationServiceModel serviceModel =
                 modelMapper.map(userRegisterBindingModel, UserRegistrationServiceModel.class);

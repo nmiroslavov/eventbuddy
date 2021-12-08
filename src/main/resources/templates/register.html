@@ -7,10 +7,12 @@
 <body>
     <h2>Register a new user</h2>
     <form th:action="@{/users/register}" th:method="post" th:object="${userRegisterBindingModel}">
+        <th:block th:if="${usernameIsTaken}"><p>Username is already taken!</p></th:block>
+        <th:block th:if="${emailIsTaken}"><p>Email is already taken!</p></th:block>
         <label for="username">Username</label>
-        <input type="text" id="username" th:field="*{username}">
+        <input type="text" id="username" th:field="*{username}" th:errorclass="is-invalid">
         <label for="email">Email</label>
-        <input type="text" id="email" th:field="*{email}">
+        <input type="text" id="email" th:field="*{email}" th:errorclass="is-invalid">
         <label for="password">Password</label>
         <input type="password" id="password" th:field="*{password}">
         <label for="matchingPassword">Confirm password</label>

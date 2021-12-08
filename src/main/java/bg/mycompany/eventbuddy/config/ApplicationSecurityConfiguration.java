@@ -56,7 +56,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 // This is the URL which spring will implement for me and will log the user out.
                         logoutUrl("/users/logout").
                 // where to go after the logout.
-                        logoutSuccessUrl("/").
+                        logoutSuccessUrl("/users/login").
                 // remove the session from server
                         invalidateHttpSession(true).
                 //delete the cookie that references my session
