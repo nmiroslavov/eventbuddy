@@ -1,5 +1,6 @@
 package bg.mycompany.eventbuddy.service;
 
+import bg.mycompany.eventbuddy.model.entity.User;
 import bg.mycompany.eventbuddy.model.service.UserRegistrationServiceModel;
 
 public interface UserService {
@@ -9,4 +10,5 @@ public interface UserService {
 
     boolean isEmailTaken(String email);
 
+    User findByUsername(String username);
 }

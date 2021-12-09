@@ -33,14 +33,14 @@ public class PictureController {
     @PostMapping("/pictures/add")
     public String addPicture(PictureUploadBindingModel pictureUploadBindingModel) throws IOException {
 
-        Picture picture = createPicture(pictureUploadBindingModel.getPicture(), pictureUploadBindingModel.getTitle());
+        Picture picture = createPicture(pictureUploadBindingModel.getPicture());
 
         pictureRepository.save(picture);
 
         return "redirect:/pictures/all";
     }
 
-    private Picture createPicture(MultipartFile file, String title) throws IOException {
+    private Picture createPicture(MultipartFile file) throws IOException {
         CloudinaryImage upload = cloudinaryService.upload(file);
 
         Picture picture = new Picture();

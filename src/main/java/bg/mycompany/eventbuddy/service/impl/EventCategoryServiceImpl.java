@@ -30,4 +30,10 @@ public class EventCategoryServiceImpl implements EventCategoryService {
             eventCategoryRepository.saveAll(categories);
         }
     }
+
+    @Override
+    public EventCategory findByCategoryEnum(EventCategoryEnum categoryEnum) {
+
+        return eventCategoryRepository.findByCategory(categoryEnum);
+    }
 }

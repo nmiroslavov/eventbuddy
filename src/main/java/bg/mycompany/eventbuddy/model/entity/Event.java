@@ -35,9 +35,6 @@ public class Event extends BaseEntity {
     @Column(name = "creation_date_time", nullable = false)
     private LocalDateTime creationDateTime;
 
-    @Column(name = "is_free", nullable = false)
-    private boolean isFree;
-
     @Column(name = "ticket_price", nullable = false)
     private BigDecimal ticketPrice;
 
@@ -106,14 +103,6 @@ public class Event extends BaseEntity {
 
     public void setCreationDateTime(LocalDateTime creationDateTime) {
         this.creationDateTime = creationDateTime;
-    }
-
-    public boolean isFree() {
-        return isFree;
-    }
-
-    public void setFree(boolean free) {
-        isFree = free;
     }
 
     public BigDecimal getTicketPrice() {
