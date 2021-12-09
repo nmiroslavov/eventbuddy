@@ -17,8 +17,8 @@ public class Event extends BaseEntity {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "coverPicture", nullable = false)
-    private String coverPicture;
+    @OneToOne
+    private Picture coverPicture;
 
     @ManyToOne
     private User creator;
@@ -60,11 +60,11 @@ public class Event extends BaseEntity {
         this.description = description;
     }
 
-    public String getCoverPicture() {
+    public Picture getCoverPicture() {
         return coverPicture;
     }
 
-    public void setCoverPicture(String coverPicture) {
+    public void setCoverPicture(Picture coverPicture) {
         this.coverPicture = coverPicture;
     }
 

@@ -34,6 +34,27 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Override
+    public void registerAdmin() {
+
+//        if (userRepository.count() == 0) {
+//            User admin = new User();
+//            admin.setUsername("nikola");
+//            admin.setPassword(passwordEncoder.encode("password"));
+//            admin.setEmail("nikola@mail.bg");
+//            admin.setFirstName("Nikola");
+//            admin.setLastName("Nikolov");
+//            admin.setAge(18);
+//            admin.setProfilePicture("profilepicture");
+//            Role role = new Role();
+//            role = roleService.findByRole(RoleEnum.ADMIN);
+//            admin.setRoles(Set.of(role));
+//
+//            userRepository.save(admin);
+//        }
+
+    }
+
     public void registerAndLoginUser(UserRegistrationServiceModel userRegistrationServiceModel) {
 
         User user = modelMapper.map(userRegistrationServiceModel, User.class);

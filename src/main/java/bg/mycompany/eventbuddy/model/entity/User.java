@@ -30,11 +30,14 @@ public class User extends BaseEntity {
     @Column(name = "age", nullable = false)
     private Integer age;
 
-    @Column(name = "profile_picture", nullable = false)
-    private String profilePicture;
+    @OneToOne()
+    private Picture profilePicture;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "attendees")
     private Set<Event> hostedAndSignedEvents = new HashSet<>();
+
+    @Column(name = "profile_creation_date_time", nullable = false)
+    private LocalDateTime profileCreationDateTime;
 
     public User() {
     }
@@ -95,11 +98,11 @@ public class User extends BaseEntity {
         this.age = age;
     }
 
-    public String getProfilePicture() {
+    public Picture getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(String profilePicture) {
+    public void setProfilePicture(Picture profilePicture) {
         this.profilePicture = profilePicture;
     }
 

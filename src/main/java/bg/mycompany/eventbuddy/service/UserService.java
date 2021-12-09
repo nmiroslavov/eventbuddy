@@ -8,4 +8,6 @@ public interface UserService {
     boolean isUsernameTaken(String username);
 
     boolean isEmailTaken(String email);
+
+    void registerAdmin();
 }
