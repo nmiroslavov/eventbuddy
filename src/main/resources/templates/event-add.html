@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create event</title>
+</head>
+<body>
+    <h1>Add event</h1>
+    <form th:action="@{/events/add}" enctype="multipart/form-data"  th:method="post" th:object="${eventAddBindingModel}">
+        <label for="title">Title</label>
+        <input id="title" type="text" th:field="*{name}" th:errorclass="is-invalid">
+        <label for="description">Description</label>
+        <input id="description" type="text" th:field="*{description}" th:errorclass="is-invalid">
+        <label for="category">Category</label>
+        <select name="category" id="category" th:errorclass="is-invalid">
+            <option value="">Select category</option>
+            <option th:each="c : ${T(bg.mycompany.eventbuddy.model.entity.EventCategoryEnum).values()}"
+                    th:text="${c}" th:value="${c}" th:selected="${c} == *{category}"
+            >Category</option>
+        </select>
+        <label for="startDateTime">Start date and time</label>
+        <input id="startDateTime" type="datetime-local" th:field="*{startDateTime}" th:errorclass="is-invalid">
+<!--        <label for="isFree">Is it free</label>-->
+<!--        <input id="isFree" type="checkbox" th:field="*{isFree}" th:errorclass="is-invalid">-->
+        <label for="ticketPrice">Ticket price</label>
+        <input id="ticketPrice" type="number" th:field="*{ticketPrice}" th:errorclass="is-invalid">
+        <label for="coverPicture">Cover picture</label>
+        <input type="file" th:field="*{coverPicture}" th:erroclass="is-invalid" id="coverPicture">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

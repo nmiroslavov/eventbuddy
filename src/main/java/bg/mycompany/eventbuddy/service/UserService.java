@@ -9,5 +9,4 @@ public interface UserService {
 
     boolean isEmailTaken(String email);
 
-    void registerAdmin();
 }
