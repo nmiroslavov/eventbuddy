@@ -1,5 +1,7 @@
 package bg.mycompany.eventbuddy.service.impl;
 
+import bg.mycompany.eventbuddy.model.entity.Picture;
+import bg.mycompany.eventbuddy.repository.PictureRepository;
 import bg.mycompany.eventbuddy.service.CloudinaryImage;
 import bg.mycompany.eventbuddy.service.CloudinaryService;
 import com.cloudinary.Cloudinary;
@@ -16,11 +18,16 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     private static final String TEMP_FILE = "temp-file";
     private static final String URL = "url";
     private static final String PUBLIC_ID = "public_id";
+    private static final String DEFAULT_PROFILE_PICTURE_PUBLIC_ID = "default";
+
+    private static final String DEFAULT_PROFILE_PICTURE_URL = "https://res.cloudinary.com/dlrfr4m5j/image/upload/v1639059919/1095867-200_yne9bl.png";
 
     private final Cloudinary cloudinary;
+    private final PictureRepository pictureRepository;
 
-    public CloudinaryServiceImpl(Cloudinary cloudinary) {
+    public CloudinaryServiceImpl(Cloudinary cloudinary, PictureRepository pictureRepository) {
         this.cloudinary = cloudinary;
+        this.pictureRepository = pictureRepository;
     }
 
     @Override
@@ -35,7 +42,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
                     upload(tempFile, Map.of());
 
             String url = uploadResult.getOrDefault(URL,
-                    "https://i.pinimg.com/originals/c5/21/64/c52164749f7460c1ededf8992cd9a6ec.jpg");
+                    DEFAULT_PROFILE_PICTURE_URL);
             String publicId = uploadResult.getOrDefault(PUBLIC_ID, "");
 
             CloudinaryImage image = new CloudinaryImage();
@@ -56,5 +63,21 @@ public class CloudinaryServiceImpl implements CloudinaryService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void defaultProfile() {
+        if (pictureRepository.count() == 0) {
+            Picture picture = new Picture();
+            picture.setUrl(DEFAULT_PROFILE_PICTURE_URL);
+            picture.setPublicId(DEFAULT_PROFILE_PICTURE_PUBLIC_ID);
+            pictureRepository.save(picture);
+        }
+    }
+
+    @Override
+    public Picture getDefaultPicture() {
+
+        return pictureRepository.findByPublicId(DEFAULT_PROFILE_PICTURE_PUBLIC_ID);
     }
 }

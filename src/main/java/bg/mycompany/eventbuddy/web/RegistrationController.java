@@ -62,6 +62,6 @@ public class RegistrationController {
                 modelMapper.map(userRegisterBindingModel, UserRegistrationServiceModel.class);
 
         userService.registerAndLoginUser(serviceModel);
-        return "redirect:home";
+        return "redirect:/home";
     }
 }

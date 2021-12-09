@@ -1,10 +1,12 @@
 package bg.mycompany.eventbuddy.service.impl;
 
+import bg.mycompany.eventbuddy.model.entity.Picture;
 import bg.mycompany.eventbuddy.model.entity.Role;
 import bg.mycompany.eventbuddy.model.entity.RoleEnum;
 import bg.mycompany.eventbuddy.model.entity.User;
 import bg.mycompany.eventbuddy.model.service.UserRegistrationServiceModel;
 import bg.mycompany.eventbuddy.repository.UserRepository;
+import bg.mycompany.eventbuddy.service.CloudinaryService;
 import bg.mycompany.eventbuddy.service.RoleService;
 import bg.mycompany.eventbuddy.service.SecurityUserServiceImpl;
 import bg.mycompany.eventbuddy.service.UserService;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Service
@@ -25,13 +28,15 @@ public class UserServiceImpl implements UserService {
     private final SecurityUserServiceImpl securityUserService;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final CloudinaryService cloudinaryService;
 
-    public UserServiceImpl(UserRepository userRepository, RoleService roleService, SecurityUserServiceImpl securityUserService, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, SecurityUserServiceImpl securityUserService, ModelMapper modelMapper, PasswordEncoder passwordEncoder, CloudinaryService cloudinaryService) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.securityUserService = securityUserService;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Override
@@ -65,6 +70,9 @@ public class UserServiceImpl implements UserService {
         // find and set role for the newly registered user
         Role userRole = roleService.findByRole(RoleEnum.USER);
         user.setRoles(Set.of(userRole));
+        user.setProfileCreationDateTime(LocalDateTime.now());
+        Picture defaultProfilePicture = cloudinaryService.getDefaultPicture();
+        user.setProfilePicture(defaultProfilePicture);
 
         userRepository.save(user);
 

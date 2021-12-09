@@ -113,4 +113,12 @@ public class User extends BaseEntity {
     public void setHostedAndSignedEvents(Set<Event> hostedAndSignedEvents) {
         this.hostedAndSignedEvents = hostedAndSignedEvents;
     }
+
+    public LocalDateTime getProfileCreationDateTime() {
+        return profileCreationDateTime;
+    }
+
+    public void setProfileCreationDateTime(LocalDateTime profileCreationDateTime) {
+        this.profileCreationDateTime = profileCreationDateTime;
+    }
 }
