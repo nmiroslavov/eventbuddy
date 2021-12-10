@@ -34,4 +34,19 @@ public class PictureServiceImpl implements PictureService {
 
         return pictureRepository.findByPublicId(picture.getPublicId());
     }
+
+    @Override
+    public Picture updateCoverPicture(MultipartFile file, Picture originalPicture) throws IOException {
+
+        CloudinaryImage updatedImage = cloudinaryService.upload(file);
+
+        cloudinaryService.delete(originalPicture.getPublicId());
+
+        originalPicture.setPublicId(updatedImage.getPublicId());
+        originalPicture.setUrl(updatedImage.getUrl());
+
+        pictureRepository.save(originalPicture);
+
+        return originalPicture;
+    }
 }

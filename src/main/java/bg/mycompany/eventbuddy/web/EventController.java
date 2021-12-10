@@ -1,7 +1,11 @@
 package bg.mycompany.eventbuddy.web;
 
 import bg.mycompany.eventbuddy.model.binding.EventAddBindingModel;
+import bg.mycompany.eventbuddy.model.binding.EventUpdateBindingModel;
+import bg.mycompany.eventbuddy.model.entity.EventCategoryEnum;
+import bg.mycompany.eventbuddy.model.entity.RoleEnum;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
+import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
 import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.service.EventService;
 import bg.mycompany.eventbuddy.security.SecurityUser;
@@ -12,10 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -74,11 +75,45 @@ public class EventController {
 
     @PreAuthorize("isOwner(#eventId)")
     @GetMapping("/events/{eventId}/edit")
-    public String getEventEditPage(@PathVariable Long eventId, Model model, @AuthenticationPrincipal SecurityUser currentUser) {
+    public String getEventEditPage(@PathVariable Long eventId, Model model) {
         EventDetailsViewModel eventDetailsViewModel = eventService.findEventByIdAndReturnView(eventId);
         if (eventDetailsViewModel == null) {
             throw new EventNotFoundException(eventId);
         }
-        return "home";
+
+        EventUpdateBindingModel eventUpdateBindingModel = eventService.getEventUpdateBindingModel(eventId);
+
+        model.addAttribute("eventUpdateBindingModel", eventUpdateBindingModel);
+        model.addAttribute("eventId", eventId);
+        model.addAttribute("categories", EventCategoryEnum.values());
+        return "event-update";
+    }
+
+    @PreAuthorize("isOwner(#eventId)")
+    @GetMapping("/events/{eventId}/edit/errors")
+    public String editEventErrors(@PathVariable Long eventId, Model model) {
+        model.addAttribute("categories", EventCategoryEnum.values());
+
+        return "event-update";
+    }
+
+    @PreAuthorize("isOwner(#eventId)")
+    @PatchMapping("/events/{eventId}/edit")
+    public String editEvent(@PathVariable Long eventId, @Valid EventUpdateBindingModel eventUpdateBindingModel,
+                            BindingResult bindingResult,
+                            RedirectAttributes redirectAttributes) throws IOException {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("eventUpdateBindingModel", eventUpdateBindingModel);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.eventUpdateBindingModel", bindingResult);
+
+            return "redirect:/events/" + eventId + "/edit/errors";
+        }
+
+        EventUpdateServiceModel eventUpdateServiceModel = modelMapper.map(eventUpdateBindingModel, EventUpdateServiceModel.class);
+
+        eventService.updateEvent(eventUpdateServiceModel, eventId);
+
+        return "redirect:/events/" + eventId + "/details";
     }
 }

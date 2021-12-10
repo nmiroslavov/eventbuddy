@@ -8,4 +8,6 @@ import java.io.IOException;
 public interface PictureService {
 
     Picture createPicture(MultipartFile file) throws IOException;
+
+    Picture updateCoverPicture(MultipartFile file, Picture originalPicture) throws IOException;
 }

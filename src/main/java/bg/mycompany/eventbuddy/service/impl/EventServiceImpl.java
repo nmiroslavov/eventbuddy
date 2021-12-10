@@ -1,17 +1,21 @@
 package bg.mycompany.eventbuddy.service.impl;
 
+import bg.mycompany.eventbuddy.model.binding.EventUpdateBindingModel;
 import bg.mycompany.eventbuddy.model.entity.*;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
+import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
 import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.repository.EventRepository;
 import bg.mycompany.eventbuddy.service.EventCategoryService;
 import bg.mycompany.eventbuddy.service.EventService;
 import bg.mycompany.eventbuddy.service.PictureService;
 import bg.mycompany.eventbuddy.service.UserService;
+import bg.mycompany.eventbuddy.web.exception.EventNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -76,6 +80,38 @@ public class EventServiceImpl implements EventService {
             return isAdmin(currentUser.get()) || event.getCreator().getUsername().equals(username);
         }
     }
+
+    @Override
+    public EventUpdateBindingModel getEventUpdateBindingModel(Long eventId) {
+
+        Event currentEvent = eventRepository.findById(eventId).orElseThrow();
+
+        EventUpdateBindingModel eventUpdateBindingModel = modelMapper.map(currentEvent, EventUpdateBindingModel.class);
+        eventUpdateBindingModel.setCoverPicture(null);
+
+        return eventUpdateBindingModel;
+    }
+
+    @Override
+    public void updateEvent(EventUpdateServiceModel eventUpdateServiceModel, Long eventId) throws IOException {
+        Event eventToBeUpdated = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+        eventToBeUpdated.setName(eventUpdateServiceModel.getName());
+        eventToBeUpdated.setDescription(eventUpdateServiceModel.getDescription());
+        eventToBeUpdated.setTicketPrice(eventUpdateServiceModel.getTicketPrice());
+        EventCategory categoryUpdate = eventCategoryService.findByCategoryEnum(eventUpdateServiceModel.getCategory());
+        eventToBeUpdated.setCategory(categoryUpdate);
+
+        if (eventUpdateServiceModel.getStartDateTime() != null) {
+            eventToBeUpdated.setCreationDateTime(eventUpdateServiceModel.getStartDateTime());
+        }
+        if (!eventUpdateServiceModel.getCoverPicture().isEmpty()) {
+            Picture updatedCoverPicture = pictureService.updateCoverPicture(eventUpdateServiceModel.getCoverPicture(), eventToBeUpdated.getCoverPicture());
+            eventToBeUpdated.setCoverPicture(updatedCoverPicture);
+        }
+
+        eventRepository.save(eventToBeUpdated);
+    }
+
 
     private boolean isAdmin(User user) {
         return user

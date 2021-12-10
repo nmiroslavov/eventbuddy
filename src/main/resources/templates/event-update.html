@@ -2,11 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Create event</title>
+    <title>Update event</title>
 </head>
 <body>
-    <h1>Add event</h1>
-    <form th:action="@{/events/add}" enctype="multipart/form-data"  th:method="post" th:object="${eventAddBindingModel}">
+    <h1>Edit event</h1>
+    <form th:action="@{/events/{eventId}/edit(eventId=${eventId})}" enctype="multipart/form-data"  th:method="patch" th:object="${eventUpdateBindingModel}">
         <label for="title">Title</label>
         <input id="title" type="text" th:field="*{name}" th:errorclass="is-invalid">
         <label for="description">Description</label>
@@ -14,8 +14,8 @@
         <label for="category">Category</label>
         <select name="category" id="category" th:errorclass="is-invalid">
             <option value="">Select category</option>
-            <option th:each="c : ${T(bg.mycompany.eventbuddy.model.entity.EventCategoryEnum).values()}"
-                    th:text="${c}" th:value="${c}" th:selected="${c} == *{category}"
+            <option th:each="category : ${categories}"
+                    th:text="${category}" th:value="${category}" th:selected="${category} == *{category}"
             >Category</option>
         </select>
         <label for="startDateTime">Start date and time</label>
