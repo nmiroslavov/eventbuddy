@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -24,7 +25,7 @@ public class Event extends BaseEntity {
     private User creator;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<User> attendees = new HashSet<>();
+    private Set<User> attendees = new LinkedHashSet<>();
 
     @ManyToOne
     private EventCategory category;

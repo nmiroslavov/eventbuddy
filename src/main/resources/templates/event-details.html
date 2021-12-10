@@ -16,5 +16,11 @@
         <h1 th:text="*{ticketPrice}"></h1>
         <img th:src="*{coverPictureUrl}">
     </div>
+    <form th:action="@{/events/{eventId}/signup(eventId=${eventId})}" th:method="post">
+        <input type="submit" value="Sign up">
+    </form>
+    <form th:action="@{/events/{eventId}/signout(eventId=${eventId})}" th:method="post">
+        <input type="submit" value="Sign out">
+    </form>
 </body>
 </html>

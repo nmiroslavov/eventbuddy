@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
 </head>
 <body>
     <h1>Welcome to the home page</h1>
+    <h1>Events you have signed up for!</h1>
+    <h1 th:each="event : ${currentUser.hostedAndSignedEvents}" th:text="${event.name}" ></h1>
+
+<!--    <select name="category" id="category" th:errorclass="is-invalid">-->
+<!--        <option value="">Select category</option>-->
+<!--        <option th:each="category : ${categories}"-->
+<!--                th:text="${category}" th:value="${category}" th:selected="${category} == *{category}"-->
+<!--        >Category</option>-->
+<!--    </select>-->
 </body>
 </html>

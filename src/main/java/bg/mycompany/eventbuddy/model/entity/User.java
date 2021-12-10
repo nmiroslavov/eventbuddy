@@ -3,6 +3,7 @@ package bg.mycompany.eventbuddy.model.entity;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -34,7 +35,7 @@ public class User extends BaseEntity {
     private Picture profilePicture;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "attendees")
-    private Set<Event> hostedAndSignedEvents = new HashSet<>();
+    private Set<Event> hostedAndSignedEvents = new LinkedHashSet<>();
 
     @Column(name = "profile_creation_date_time", nullable = false)
     private LocalDateTime profileCreationDateTime;

@@ -6,6 +6,7 @@ import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
 import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.repository.EventRepository;
+import bg.mycompany.eventbuddy.security.SecurityUser;
 import bg.mycompany.eventbuddy.service.EventCategoryService;
 import bg.mycompany.eventbuddy.service.EventService;
 import bg.mycompany.eventbuddy.service.PictureService;
@@ -13,6 +14,7 @@ import bg.mycompany.eventbuddy.service.UserService;
 import bg.mycompany.eventbuddy.web.exception.EventNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -110,6 +112,55 @@ public class EventServiceImpl implements EventService {
         }
 
         eventRepository.save(eventToBeUpdated);
+    }
+
+    @Override
+    public boolean isUserAlreadySignedUpForEvent(SecurityUser user, Long eventId) {
+
+        User currentUser = userService.findByUsername(user.getUsername());
+        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+
+        if (currentEvent.getCreator().getUsername().equals(currentUser.getUsername())) {
+            return false;
+        }
+
+        if (currentEvent.getAttendees().stream().anyMatch(u -> u.getUsername().equals(currentUser.getUsername()))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void signUpUser(String userIdentifier, Long eventId) {
+        User currentUser = userService.findByUsername(userIdentifier);
+        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+
+        currentEvent.getAttendees().add(currentUser);
+        eventRepository.save(currentEvent);
+    }
+
+    @Override
+    public boolean isUserSignedUpForEvent(SecurityUser user, Long eventId) {
+
+        User currentUser = userService.findByUsername(user.getUsername());
+        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+
+        if (currentEvent.getAttendees().stream().anyMatch(u -> u.getUsername().equals(currentUser.getUsername()))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Transactional
+    @Override
+    public void signOutUser(String userIdentifier, Long eventId) {
+        User currentUser = userService.findByUsername(userIdentifier);
+        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+
+        currentEvent.getAttendees().remove(currentUser);
+        eventRepository.save(currentEvent);
     }
 
 

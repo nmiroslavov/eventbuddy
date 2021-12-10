@@ -116,4 +116,23 @@ public class EventController {
 
         return "redirect:/events/" + eventId + "/details";
     }
+
+    @PreAuthorize("@eventServiceImpl.isUserAlreadySignedUpForEvent(#user, #eventId)")
+    @PostMapping("/events/{eventId}/signup")
+    public String signUpForEvent(@PathVariable Long eventId, @AuthenticationPrincipal SecurityUser user) {
+
+        eventService.signUpUser(user.getUserIdentifier(), eventId);
+
+       return "redirect:/home";
+    }
+
+    @PreAuthorize("@eventServiceImpl.isUserSignedUpForEvent(#user, #eventId)")
+    @PostMapping("/events/{eventId}/signout")
+    public String signOutOfEvent(@PathVariable Long eventId, @AuthenticationPrincipal SecurityUser user) {
+
+        eventService.signOutUser(user.getUserIdentifier(), eventId);
+
+        return "redirect:/home";
+
+    }
 }
