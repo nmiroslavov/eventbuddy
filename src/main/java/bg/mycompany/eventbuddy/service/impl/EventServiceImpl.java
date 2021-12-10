@@ -1,9 +1,6 @@
 package bg.mycompany.eventbuddy.service.impl;
 
-import bg.mycompany.eventbuddy.model.entity.Event;
-import bg.mycompany.eventbuddy.model.entity.EventCategory;
-import bg.mycompany.eventbuddy.model.entity.Picture;
-import bg.mycompany.eventbuddy.model.entity.User;
+import bg.mycompany.eventbuddy.model.entity.*;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.repository.EventRepository;
@@ -64,5 +61,27 @@ public class EventServiceImpl implements EventService {
         eventDetailsViewModel.setStartDate(currentEvent.getStartDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         eventDetailsViewModel.setStartTime(currentEvent.getStartDateTime().format(DateTimeFormatter.ofPattern("HH:mm")));
         return eventDetailsViewModel;
+    }
+
+    @Override
+    public boolean isOwner(String username, Long id) {
+
+        Optional<Event> currentEvent = eventRepository.findById(id);
+        Optional<User> currentUser = userService.findByUsernameOptional(username);
+
+        if (currentEvent.isEmpty() || currentUser.isEmpty()) {
+            return false;
+        } else {
+            Event event = currentEvent.get();
+            return isAdmin(currentUser.get()) || event.getCreator().getUsername().equals(username);
+        }
+    }
+
+    private boolean isAdmin(User user) {
+        return user
+                .getRoles()
+                .stream()
+                .map(Role::getRole)
+                .anyMatch(r -> r == RoleEnum.ADMIN);
     }
 }

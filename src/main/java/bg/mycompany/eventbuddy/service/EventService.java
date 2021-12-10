@@ -9,4 +9,6 @@ public interface EventService {
     void addEvent(EventAddServiceModel eventAddServiceModel) throws IOException;
 
     EventDetailsViewModel findEventByIdAndReturnView(Long eventId);
+
+    boolean isOwner(String username, Long id);
 }

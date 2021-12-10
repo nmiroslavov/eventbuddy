@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -75,5 +76,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow();
+    }
+
+    @Override
+    public Optional<User> findByUsernameOptional(String username) {
+        return userRepository.findByUsername(username);
     }
 }

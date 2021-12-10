@@ -7,6 +7,7 @@ import bg.mycompany.eventbuddy.service.EventService;
 import bg.mycompany.eventbuddy.security.SecurityUser;
 import bg.mycompany.eventbuddy.web.exception.EventNotFoundException;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,12 +63,22 @@ public class EventController {
     }
 
     @GetMapping("/events/{eventId}/details")
-    public String getOfferDetails(@PathVariable Long eventId, Model model) {
+    public String getEventDetails(@PathVariable Long eventId, Model model) {
         EventDetailsViewModel currentEvent = eventService.findEventByIdAndReturnView(eventId);
         if (currentEvent == null) {
             throw new EventNotFoundException(eventId);
         }
         model.addAttribute("event", currentEvent);
         return "event-details";
+    }
+
+    @PreAuthorize("isOwner(#eventId)")
+    @GetMapping("/events/{eventId}/edit")
+    public String getEventEditPage(@PathVariable Long eventId, Model model, @AuthenticationPrincipal SecurityUser currentUser) {
+        EventDetailsViewModel eventDetailsViewModel = eventService.findEventByIdAndReturnView(eventId);
+        if (eventDetailsViewModel == null) {
+            throw new EventNotFoundException(eventId);
+        }
+        return "home";
     }
 }
