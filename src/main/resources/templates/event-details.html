@@ -22,5 +22,8 @@
     <form th:action="@{/events/{eventId}/signout(eventId=${eventId})}" th:method="post">
         <input type="submit" value="Sign out">
     </form>
+    <form th:action="@{/events/{eventId}(eventId=${eventId})}" th:method="delete">
+        <input type="submit" class="btn btn-link" value="Delete"/>
+    </form>
 </body>
 </html>

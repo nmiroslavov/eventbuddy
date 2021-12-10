@@ -26,4 +26,6 @@ public interface EventService {
     boolean isUserSignedUpForEvent(SecurityUser user, Long eventId);
 
     void signOutUser(String userIdentifier, Long eventId);
+
+    void deleteEvent(Long eventId);
 }

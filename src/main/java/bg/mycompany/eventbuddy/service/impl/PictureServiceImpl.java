@@ -6,6 +6,7 @@ import bg.mycompany.eventbuddy.service.CloudinaryImage;
 import bg.mycompany.eventbuddy.service.CloudinaryService;
 import bg.mycompany.eventbuddy.service.PictureService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -48,5 +49,15 @@ public class PictureServiceImpl implements PictureService {
         pictureRepository.save(originalPicture);
 
         return originalPicture;
+    }
+
+    @Transactional
+    @Override
+    public boolean deletePicture(Picture picture) {
+
+        boolean isDeleted = cloudinaryService.delete(picture.getPublicId());
+        pictureRepository.delete(picture);
+
+        return isDeleted;
     }
 }

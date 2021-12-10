@@ -163,6 +163,14 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(currentEvent);
     }
 
+    @Transactional
+    @Override
+    public void deleteEvent(Long eventId) {
+        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+        boolean isDeleted = pictureService.deletePicture(currentEvent.getCoverPicture());
+        eventRepository.delete(currentEvent);
+    }
+
 
     private boolean isAdmin(User user) {
         return user

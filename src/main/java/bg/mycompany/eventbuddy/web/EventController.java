@@ -135,4 +135,13 @@ public class EventController {
         return "redirect:/home";
 
     }
+
+    @PreAuthorize("isOwner(#eventId)")
+    @DeleteMapping("/events/{eventId}")
+    public String deleteEvent(@PathVariable Long eventId) {
+
+        eventService.deleteEvent(eventId);
+
+        return "redirect:/home";
+    }
 }
