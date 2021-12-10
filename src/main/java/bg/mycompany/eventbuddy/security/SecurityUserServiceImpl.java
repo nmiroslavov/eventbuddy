@@ -1,7 +1,8 @@
-package bg.mycompany.eventbuddy.service;
+package bg.mycompany.eventbuddy.security;
 
 import bg.mycompany.eventbuddy.model.entity.User;
 import bg.mycompany.eventbuddy.repository.UserRepository;
+import bg.mycompany.eventbuddy.security.SecurityUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

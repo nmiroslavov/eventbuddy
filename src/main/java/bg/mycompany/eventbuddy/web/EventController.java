@@ -2,14 +2,18 @@ package bg.mycompany.eventbuddy.web;
 
 import bg.mycompany.eventbuddy.model.binding.EventAddBindingModel;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
+import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.service.EventService;
-import bg.mycompany.eventbuddy.service.SecurityUser;
+import bg.mycompany.eventbuddy.security.SecurityUser;
+import bg.mycompany.eventbuddy.web.exception.EventNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -55,5 +59,15 @@ public class EventController {
         eventService.addEvent(eventAddServiceModel);
 
         return "redirect:/home";
+    }
+
+    @GetMapping("/events/{eventId}/details")
+    public String getOfferDetails(@PathVariable Long eventId, Model model) {
+        EventDetailsViewModel currentEvent = eventService.findEventByIdAndReturnView(eventId);
+        if (currentEvent == null) {
+            throw new EventNotFoundException(eventId);
+        }
+        model.addAttribute("event", currentEvent);
+        return "event-details";
     }
 }

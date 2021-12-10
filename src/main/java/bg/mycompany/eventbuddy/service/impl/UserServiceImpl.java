@@ -8,7 +8,7 @@ import bg.mycompany.eventbuddy.model.service.UserRegistrationServiceModel;
 import bg.mycompany.eventbuddy.repository.UserRepository;
 import bg.mycompany.eventbuddy.service.CloudinaryService;
 import bg.mycompany.eventbuddy.service.RoleService;
-import bg.mycompany.eventbuddy.service.SecurityUserServiceImpl;
+import bg.mycompany.eventbuddy.security.SecurityUserServiceImpl;
 import bg.mycompany.eventbuddy.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

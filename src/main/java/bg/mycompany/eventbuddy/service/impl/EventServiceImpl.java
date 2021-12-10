@@ -5,6 +5,7 @@ import bg.mycompany.eventbuddy.model.entity.EventCategory;
 import bg.mycompany.eventbuddy.model.entity.Picture;
 import bg.mycompany.eventbuddy.model.entity.User;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
+import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.repository.EventRepository;
 import bg.mycompany.eventbuddy.service.EventCategoryService;
 import bg.mycompany.eventbuddy.service.EventService;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -45,5 +48,21 @@ public class EventServiceImpl implements EventService {
         currentEvent.setCoverPicture(picture);
 
         eventRepository.save(currentEvent);
+    }
+
+    @Override
+    public EventDetailsViewModel findEventByIdAndReturnView(Long eventId) {
+        Event currentEvent = eventRepository.findById(eventId).orElse(null);
+        if (currentEvent == null) {
+            return null;
+        }
+        EventDetailsViewModel eventDetailsViewModel = modelMapper.map(currentEvent, EventDetailsViewModel.class);
+        eventDetailsViewModel.setAttendeesCount(currentEvent.getAttendees().size());
+        eventDetailsViewModel.setCoverPictureUrl(currentEvent.getCoverPicture().getUrl());
+        eventDetailsViewModel.setCreatorUsername(currentEvent.getCreator().getUsername());
+        eventDetailsViewModel.setCategory(currentEvent.getCategory().getCategory().toString());
+        eventDetailsViewModel.setStartDate(currentEvent.getStartDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        eventDetailsViewModel.setStartTime(currentEvent.getStartDateTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+        return eventDetailsViewModel;
     }
 }

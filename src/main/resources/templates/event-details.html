@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Details</title>
+</head>
+<body>
+    <div th:object="${event}">
+        <h1 th:text="*{name}"></h1>
+        <h1 th:text="*{description}"></h1>
+        <h1 th:text="*{category}"></h1>
+        <h1 th:text="*{creatorUsername}"></h1>
+        <h1 th:text="*{attendeesCount}"></h1>
+        <h1 th:text="*{startDate}"></h1>
+        <h1 th:text="*{startTime}"></h1>
+        <h1 th:text="*{ticketPrice}"></h1>
+        <img th:src="*{coverPictureUrl}">
+    </div>
+</body>
+</html>

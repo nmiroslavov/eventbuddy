@@ -1,4 +1,4 @@
-package bg.mycompany.eventbuddy.service;
+package bg.mycompany.eventbuddy.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
