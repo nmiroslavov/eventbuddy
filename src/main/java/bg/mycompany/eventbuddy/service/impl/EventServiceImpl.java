@@ -190,6 +190,11 @@ public class EventServiceImpl implements EventService {
         return eventAttendeesViewModel;
     }
 
+    @Override
+    public void cleanEventsThatHavePassed() {
+        eventRepository.deleteAllByPastDateTime();
+    }
+
 
     private boolean isAdmin(User user) {
         return user

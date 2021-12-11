@@ -31,4 +31,6 @@ public interface EventService {
     void deleteEvent(Long eventId);
 
     EventAttendeesViewModel getEventAttendees(Long eventId);
+
+    void cleanEventsThatHavePassed();
 }
