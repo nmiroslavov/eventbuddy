@@ -60,4 +60,37 @@ public class PictureServiceImpl implements PictureService {
 
         return isDeleted;
     }
+
+    @Override
+    public boolean isProfilePictureDefault(Picture picture) {
+
+        return picture.getPublicId().equals("default");
+    }
+
+    @Override
+    public Picture updateDefaultProfilePicture(MultipartFile file) throws IOException {
+
+        CloudinaryImage updatedImage = cloudinaryService.upload(file);
+        Picture profilePicture = new Picture();
+        profilePicture.setPublicId(updatedImage.getPublicId());
+        profilePicture.setUrl(updatedImage.getUrl());
+        pictureRepository.save(profilePicture);
+
+        return profilePicture;
+    }
+
+    @Override
+    public Picture updateProfilePicture(MultipartFile file, Picture originalPicture) throws IOException {
+
+        CloudinaryImage updatedImage = cloudinaryService.upload(file);
+
+        cloudinaryService.delete(originalPicture.getPublicId());
+
+        originalPicture.setPublicId(updatedImage.getPublicId());
+        originalPicture.setUrl(updatedImage.getUrl());
+
+        pictureRepository.save(originalPicture);
+
+        return originalPicture;
+    }
 }

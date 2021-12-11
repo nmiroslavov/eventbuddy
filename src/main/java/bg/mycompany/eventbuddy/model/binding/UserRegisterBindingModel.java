@@ -29,6 +29,8 @@ public class UserRegisterBindingModel {
     private String lastName;
 
     @NotNull
+    @Min(18)
+    @Max(100)
     private Integer age;
 
     public UserRegisterBindingModel() {

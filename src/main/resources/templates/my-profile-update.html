@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update profile</title>
+</head>
+<body>
+    <h2>Update profile information</h2>
+    <form th:action="@{/users/myprofile/update}" enctype="multipart/form-data" th:method="patch" th:object="${userUpdateBindingModel}">
+        <lable for="firstName">First name</lable>
+        <input type="text" id="firstName" th:field="*{firstName}">
+        <lable for="firstName">Last name</lable>
+        <input type="text" id="lastName" th:field="*{lastName}">
+        <lable for="age">Age</lable>
+        <input type="number" id="age" th:field="*{age}">
+        <label for="picture">Profile picture</label>
+        <input type="file" th:field="*{picture}" th:erroclass="is-invalid" id="picture">
+        <input type="submit" value="Update profile">
+    </form>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My profile</title>
+</head>
+<body>
+<div th:object="${currentUserDetails}">
+    <h1 th:text="*{username}"></h1>
+    <h1 th:text="*{email}"></h1>
+    <h1 th:text="*{firstName}"></h1>
+    <h1 th:text="*{lastName}"></h1>
+    <h1 th:text="*{age}"></h1>
+    <h1 th:text="*{createdOn}"></h1>
+    <img th:src="*{profilePictureUrl}">
+</div>
+</body>
+</html>

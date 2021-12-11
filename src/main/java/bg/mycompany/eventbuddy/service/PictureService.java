@@ -12,4 +12,10 @@ public interface PictureService {
     Picture updateCoverPicture(MultipartFile file, Picture originalPicture) throws IOException;
 
     boolean deletePicture(Picture picture);
+
+    boolean isProfilePictureDefault(Picture picture);
+
+    Picture updateDefaultProfilePicture(MultipartFile file) throws IOException;
+
+    Picture updateProfilePicture(MultipartFile file, Picture originalPicture) throws IOException;
 }

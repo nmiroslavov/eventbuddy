@@ -15,4 +15,12 @@ public class GlobalExceptionHandler {
         modelAndView.setStatus(HttpStatus.NOT_FOUND);
         return modelAndView;
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ModelAndView handleUserNotFoundException(UserNotFoundException e) {
+        ModelAndView modelAndView = new ModelAndView("user-not-found");
+        modelAndView.addObject("message", e.getMessage());
+        modelAndView.setStatus(HttpStatus.NOT_FOUND);
+        return modelAndView;
+    }
 }
