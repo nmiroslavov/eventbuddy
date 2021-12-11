@@ -49,6 +49,25 @@ public class UserServiceImpl implements UserService {
         this.pictureService = pictureService;
     }
 
+    @Override
+    public void initAdminUser() {
+        if (userRepository.count() == 0) {
+            User admin = new User();
+            admin.setUsername("nikola");
+            admin.setEmail("nikola@mail.bg");
+            admin.setFirstName("Nikola");
+            admin.setLastName("Nikolov");
+            admin.setAge(22);
+            admin.setPassword(passwordEncoder.encode("password"));
+            Role adminRole = roleService.findByRole(RoleEnum.ADMIN);
+            admin.setRoles(Set.of(adminRole));
+            admin.setProfileCreationDateTime(LocalDateTime.now());
+            Picture picture = cloudinaryService.getDefaultPicture();
+            admin.setProfilePicture(picture);
+            userRepository.save(admin);
+        }
+    }
+
     public void registerAndLoginUser(UserRegistrationServiceModel userRegistrationServiceModel) {
 
         User user = modelMapper.map(userRegistrationServiceModel, User.class);

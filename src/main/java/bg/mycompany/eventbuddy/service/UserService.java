@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.Optional;
 
 public interface UserService {
+
+    void initAdminUser();
+
     void registerAndLoginUser(UserRegistrationServiceModel userRegistrationServiceModel);
 
     boolean isUsernameTaken(String username);
