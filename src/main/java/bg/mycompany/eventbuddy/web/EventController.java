@@ -6,6 +6,7 @@ import bg.mycompany.eventbuddy.model.entity.EventCategoryEnum;
 import bg.mycompany.eventbuddy.model.entity.RoleEnum;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
+import bg.mycompany.eventbuddy.model.view.EventAttendeesViewModel;
 import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.service.EventService;
 import bg.mycompany.eventbuddy.security.SecurityUser;
@@ -143,5 +144,15 @@ public class EventController {
         eventService.deleteEvent(eventId);
 
         return "redirect:/home";
+    }
+
+    @GetMapping("/events/{eventId}/details/attendees")
+    public String getEventAttendees(@PathVariable Long eventId, Model model) {
+
+        EventAttendeesViewModel attendees = eventService.getEventAttendees(eventId);
+        model.addAttribute("attendees", attendees);
+
+
+        return "event-attendees";
     }
 }

@@ -25,5 +25,8 @@
     <form th:action="@{/events/{eventId}(eventId=${eventId})}" th:method="delete">
         <input type="submit" class="btn btn-link" value="Delete"/>
     </form>
+    <form th:action="@{/events/{eventId}/details/attendees(eventId=${eventId})}" th:method="get">
+        <input type="submit" class="btn btn-link" value="See attendees"/>
+    </form>
 </body>
 </html>

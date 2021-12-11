@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Event attendees</title>
+</head>
+<body>
+    <th:block th:object="${attendees}">
+        <div th:each="a : ${attendees.attendees}">
+            <h1 th:text="${a.username}"></h1>
+            <img th:src="${a.profilePicture}">
+            <br>
+        </div>
+    </th:block>
+</body>
+</html>

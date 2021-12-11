@@ -4,6 +4,8 @@ import bg.mycompany.eventbuddy.model.binding.EventUpdateBindingModel;
 import bg.mycompany.eventbuddy.model.entity.*;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
+import bg.mycompany.eventbuddy.model.view.EventAttendeeViewModel;
+import bg.mycompany.eventbuddy.model.view.EventAttendeesViewModel;
 import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.repository.EventRepository;
 import bg.mycompany.eventbuddy.security.SecurityUser;
@@ -169,6 +171,23 @@ public class EventServiceImpl implements EventService {
         Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         boolean isDeleted = pictureService.deletePicture(currentEvent.getCoverPicture());
         eventRepository.delete(currentEvent);
+    }
+
+    @Override
+    public EventAttendeesViewModel getEventAttendees(Long eventId) {
+
+        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+        EventAttendeesViewModel eventAttendeesViewModel = new EventAttendeesViewModel();
+
+        for (User attendee : currentEvent.getAttendees()) {
+            EventAttendeeViewModel eventAttendeeViewModel = new EventAttendeeViewModel();
+            eventAttendeeViewModel.setUserId(attendee.getId());
+            eventAttendeeViewModel.setProfilePicture(attendee.getProfilePicture().getUrl());
+            eventAttendeeViewModel.setUsername(attendee.getUsername());
+            eventAttendeesViewModel.getAttendees().add(eventAttendeeViewModel);
+        }
+
+        return eventAttendeesViewModel;
     }
 
 

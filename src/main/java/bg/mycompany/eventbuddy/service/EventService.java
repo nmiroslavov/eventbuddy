@@ -3,6 +3,7 @@ package bg.mycompany.eventbuddy.service;
 import bg.mycompany.eventbuddy.model.binding.EventUpdateBindingModel;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
+import bg.mycompany.eventbuddy.model.view.EventAttendeesViewModel;
 import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.security.SecurityUser;
 
@@ -28,4 +29,6 @@ public interface EventService {
     void signOutUser(String userIdentifier, Long eventId);
 
     void deleteEvent(Long eventId);
+
+    EventAttendeesViewModel getEventAttendees(Long eventId);
 }
