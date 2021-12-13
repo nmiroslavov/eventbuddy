@@ -17,6 +17,11 @@ public class HomeController {
         this.userService = userService;
     }
 
+    @GetMapping("/")
+    public String getIndexPage() {
+        return "index";
+    }
+
     @GetMapping("/home")
     public String getHomePage(@AuthenticationPrincipal SecurityUser user, Model model) {
         User currentUser = userService.findByUsername(user.getUsername());

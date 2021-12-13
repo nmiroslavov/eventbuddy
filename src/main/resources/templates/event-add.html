@@ -1,30 +1,97 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Create event</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/register.css">
 </head>
-<body>
-    <h1>Add event</h1>
-    <form th:action="@{/events/add}" enctype="multipart/form-data"  th:method="post" th:object="${eventAddBindingModel}">
-        <label for="title">Title</label>
-        <input id="title" type="text" th:field="*{name}" th:errorclass="is-invalid">
-        <label for="description">Description</label>
-        <input id="description" type="text" th:field="*{description}" th:errorclass="is-invalid">
-        <label for="category">Category</label>
-        <select name="category" id="category" th:errorclass="is-invalid">
-            <option value="">Select category</option>
-            <option th:each="c : ${T(bg.mycompany.eventbuddy.model.entity.EventCategoryEnum).values()}"
-                    th:text="${c}" th:value="${c}" th:selected="${c} == *{category}"
-            >Category</option>
-        </select>
-        <label for="startDateTime">Start date and time</label>
-        <input id="startDateTime" type="datetime-local" th:field="*{startDateTime}" th:errorclass="is-invalid">
-        <label for="ticketPrice">Ticket price</label>
-        <input id="ticketPrice" type="number" th:field="*{ticketPrice}" th:errorclass="is-invalid">
-        <label for="coverPicture">Cover picture</label>
-        <input type="file" th:field="*{coverPicture}" th:erroclass="is-invalid" id="coverPicture">
-        <input type="submit" value="Submit">
-    </form>
+<body class="bg-dark text-white">
+
+
+<div class="container">
+    <div class="row">
+        <header th:replace="components/commons::navbar"></header>
+    </div>
+
+    <div class="row">
+        <div id="starter" class="col d-flex justify-content-center">
+            <div id="card" class="card w-75 card text-white bg-secondary mb-3">
+                <div class="card-header">Create event</div>
+                <div class="card-body">
+                    <form th:action="@{/events/add}" enctype="multipart/form-data" th:method="post" th:object="${eventAddBindingModel}">
+                        <div class="row g-3 mb-3">
+                            <div class="col">
+                                <label for="name" class="form-label">Event name</label>
+                                <input th:field="*{name}" th:errorclass="is-invalid" type="text" class="form-control" id="name">
+                                <small id="nameHelpInline" class="invalid-feedback bg-danger text-light rounded p-2">
+                                    Event name length must be between 3 and 25 characters.
+                                </small>
+                            </div>
+                            <div class="col">
+                                <label for="ticketPrice" class="form-label">Ticket price ($)</label>
+                                <input th:field="*{ticketPrice}" th:errorclass="is-invalid" type="number" class="form-control" id="ticketPrice">
+                                <small id="ticketPriceHelpInline" class="invalid-feedback bg-danger text-light rounded p-2">
+                                    The price of the ticket must be 0 or positive.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col">
+                                <label for="category">Category</label>
+                                <select name="category" id="category" th:errorclass="is-invalid" class="form-control">
+                                    <option value="">Select category</option>
+                                    <option th:each="c : ${T(bg.mycompany.eventbuddy.model.entity.EventCategoryEnum).values()}"
+                                            th:text="${c}" th:value="${c}" th:selected="${c} == *{category}"
+                                    >Category</option>
+                                </select>
+                                <small id="categoryHelpInline" class="invalid-feedback bg-danger text-light rounded p-2">
+                                    Choose a valid category.
+                                </small>
+                            </div>
+                            <div class="col">
+                                <label for="coverPicture">Cover picture</label>
+                                <input type="file" th:field="*{coverPicture}" th:erroclass="is-invalid" id="coverPicture" class="form-control">
+                                <small id="coverPictureHelpInline" class="invalid-feedback bg-danger text-light rounded p-2">
+                                    File must be a valid picture.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col">
+                                <label for="startDateTime" class="form-label">Start time</label>
+                                <input th:field="*{startDateTime}" th:errorclass="is-invalid" type="datetime-local" class="form-control" id="startDateTime">
+                                <small id="startDateTimeHelpInline" class="invalid-feedback bg-danger text-light rounded p-2">
+                                    The starting date must be in the future.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea th:field="*{description}" th:errorclass="is-invalid" class="form-control" name="description" id="description" cols="15" rows="5"></textarea>
+                                <!--<input th:field="*{description}" th:errorclass="is-invalid" type="text" class="form-control" id="description">-->
+                                <small id="descriptionHelpInline" class="invalid-feedback bg-danger text-light rounded p-2">
+                                    Description must be at least 10 symbols.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="row g-1 mb-3">
+                            <button type="submit" class="btn btn-dark">Create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>
+
+

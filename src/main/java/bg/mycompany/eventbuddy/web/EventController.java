@@ -59,14 +59,14 @@ public class EventController {
         EventAddServiceModel eventAddServiceModel = modelMapper.map(eventAddBindingModel, EventAddServiceModel.class);
         eventAddServiceModel.setCreatorUsername(user.getUserIdentifier());
 
-        eventService.addEvent(eventAddServiceModel);
+        Long eventId = eventService.addEvent(eventAddServiceModel);
 
-        return "redirect:/home";
+        return "redirect:/events/" + eventId + "/details";
     }
 
     @GetMapping("/events/{eventId}/details")
-    public String getEventDetails(@PathVariable Long eventId, Model model) {
-        EventDetailsViewModel currentEvent = eventService.findEventByIdAndReturnView(eventId);
+    public String getEventDetails(@PathVariable Long eventId, Model model, @AuthenticationPrincipal SecurityUser user) {
+        EventDetailsViewModel currentEvent = eventService.findEventByIdAndReturnView(eventId, user.getUserIdentifier());
         if (currentEvent == null) {
             throw new EventNotFoundException(eventId);
         }
@@ -76,8 +76,8 @@ public class EventController {
 
     @PreAuthorize("isOwner(#eventId)")
     @GetMapping("/events/{eventId}/edit")
-    public String getEventEditPage(@PathVariable Long eventId, Model model) {
-        EventDetailsViewModel eventDetailsViewModel = eventService.findEventByIdAndReturnView(eventId);
+    public String getEventEditPage(@PathVariable Long eventId, Model model, @AuthenticationPrincipal SecurityUser user) {
+        EventDetailsViewModel eventDetailsViewModel = eventService.findEventByIdAndReturnView(eventId, user.getUserIdentifier());
         if (eventDetailsViewModel == null) {
             throw new EventNotFoundException(eventId);
         }

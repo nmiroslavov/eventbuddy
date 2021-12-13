@@ -42,7 +42,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void addEvent(EventAddServiceModel eventAddServiceModel) throws IOException {
+    public Long addEvent(EventAddServiceModel eventAddServiceModel) throws IOException {
         Event currentEvent = modelMapper.map(eventAddServiceModel, Event.class);
         User creator = userService.findByUsername(eventAddServiceModel.getCreatorUsername());
         EventCategory category = eventCategoryService.findByCategoryEnum(eventAddServiceModel.getCategory());
@@ -52,11 +52,13 @@ public class EventServiceImpl implements EventService {
         Picture picture = pictureService.createPicture(eventAddServiceModel.getCoverPicture());
         currentEvent.setCoverPicture(picture);
 
-        eventRepository.save(currentEvent);
+        Event createdEvent = eventRepository.save(currentEvent);
+
+        return createdEvent.getId();
     }
 
     @Override
-    public EventDetailsViewModel findEventByIdAndReturnView(Long eventId) {
+    public EventDetailsViewModel findEventByIdAndReturnView(Long eventId, String username) {
         Event currentEvent = eventRepository.findById(eventId).orElse(null);
         if (currentEvent == null) {
             return null;
@@ -68,6 +70,21 @@ public class EventServiceImpl implements EventService {
         eventDetailsViewModel.setCategory(currentEvent.getCategory().getCategory().toString());
         eventDetailsViewModel.setStartDate(currentEvent.getStartDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         eventDetailsViewModel.setStartTime(currentEvent.getStartDateTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+        if (isOwner(username, eventId) || isAdmin(userService.findByUsername(username))) {
+            eventDetailsViewModel.setCanDelete(true);
+        }
+        if (isUserAlreadySignedUpForEventByUsername(username, eventId)) {
+            eventDetailsViewModel.setCanSignUp(true);
+            eventDetailsViewModel.setCanSignOut(false);
+        } else {
+            eventDetailsViewModel.setCanSignUp(false);
+            eventDetailsViewModel.setCanSignOut(true);
+        }
+        if (isOwner(username, eventId)) {
+            eventDetailsViewModel.setCanUpdate(true);
+            eventDetailsViewModel.setCanSignUp(false);
+            eventDetailsViewModel.setCanSignOut(false);
+        }
         return eventDetailsViewModel;
     }
 
@@ -114,6 +131,21 @@ public class EventServiceImpl implements EventService {
         }
 
         eventRepository.save(eventToBeUpdated);
+    }
+
+    private boolean isUserAlreadySignedUpForEventByUsername(String username, Long eventId) {
+        User currentUser = userService.findByUsername(username);
+        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+
+        if (currentEvent.getCreator().getUsername().equals(currentUser.getUsername())) {
+            return true;
+        }
+
+        if (currentEvent.getAttendees().stream().anyMatch(u -> u.getUsername().equals(currentUser.getUsername()))) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

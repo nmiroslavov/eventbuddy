@@ -10,9 +10,9 @@ import bg.mycompany.eventbuddy.security.SecurityUser;
 import java.io.IOException;
 
 public interface EventService {
-    void addEvent(EventAddServiceModel eventAddServiceModel) throws IOException;
+    Long addEvent(EventAddServiceModel eventAddServiceModel) throws IOException;
 
-    EventDetailsViewModel findEventByIdAndReturnView(Long eventId);
+    EventDetailsViewModel findEventByIdAndReturnView(Long eventId, String username);
 
     boolean isOwner(String username, Long id);
 

@@ -10,6 +10,10 @@ public class EventDetailsViewModel {
     private String startDate;
     private String startTime;
     private Integer ticketPrice;
+    private boolean canDelete;
+    private boolean canSignUp;
+    private boolean canSignOut;
+    private boolean canUpdate;
 
     public EventDetailsViewModel() {
     }
@@ -84,5 +88,37 @@ public class EventDetailsViewModel {
 
     public void setTicketPrice(Integer ticketPrice) {
         this.ticketPrice = ticketPrice;
+    }
+
+    public boolean isCanDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(boolean canDelete) {
+        this.canDelete = canDelete;
+    }
+
+    public boolean isCanSignUp() {
+        return canSignUp;
+    }
+
+    public void setCanSignUp(boolean canSignUp) {
+        this.canSignUp = canSignUp;
+    }
+
+    public boolean isCanSignOut() {
+        return canSignOut;
+    }
+
+    public void setCanSignOut(boolean canSignOut) {
+        this.canSignOut = canSignOut;
+    }
+
+    public boolean isCanUpdate() {
+        return canUpdate;
+    }
+
+    public void setCanUpdate(boolean canUpdate) {
+        this.canUpdate = canUpdate;
     }
 }

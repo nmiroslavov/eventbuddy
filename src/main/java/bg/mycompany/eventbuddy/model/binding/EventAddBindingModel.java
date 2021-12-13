@@ -28,6 +28,7 @@ public class EventAddBindingModel {
     @Future
     private LocalDateTime startDateTime;
 
+    @NotNull
     @PositiveOrZero
     private BigDecimal ticketPrice;
 
