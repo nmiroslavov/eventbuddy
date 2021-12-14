@@ -4,6 +4,7 @@ import bg.mycompany.eventbuddy.model.binding.UserUpdateBindingModel;
 import bg.mycompany.eventbuddy.model.entity.User;
 import bg.mycompany.eventbuddy.model.service.UserRegistrationServiceModel;
 import bg.mycompany.eventbuddy.model.service.UserUpdateServiceModel;
+import bg.mycompany.eventbuddy.model.view.UserAllEvents;
 import bg.mycompany.eventbuddy.model.view.UserCurrentDetailsViewModel;
 
 import java.io.IOException;
@@ -28,4 +29,7 @@ public interface UserService {
     UserUpdateBindingModel getUserUpdateBindingModel(String userIdentifier);
 
     void updateUser(UserUpdateServiceModel userUpdateServiceModel, String userIdentifier) throws IOException;
+
+    UserAllEvents findCurrentUserAllEvents(String username);
+
 }

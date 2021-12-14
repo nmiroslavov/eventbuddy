@@ -2,9 +2,7 @@ package bg.mycompany.eventbuddy.model.entity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -20,7 +18,7 @@ public class User extends BaseEntity {
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> roles = new LinkedHashSet<>();
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -35,7 +33,7 @@ public class User extends BaseEntity {
     private Picture profilePicture;
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "attendees")
-    private Set<Event> hostedAndSignedEvents = new LinkedHashSet<>();
+    private List<Event> hostedAndSignedEvents = new ArrayList<>();
 
     @Column(name = "profile_creation_date_time", nullable = false)
     private LocalDateTime profileCreationDateTime;
@@ -65,14 +63,6 @@ public class User extends BaseEntity {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
     }
 
     public String getFirstName() {
@@ -107,11 +97,19 @@ public class User extends BaseEntity {
         this.profilePicture = profilePicture;
     }
 
-    public Set<Event> getHostedAndSignedEvents() {
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public List<Event> getHostedAndSignedEvents() {
         return hostedAndSignedEvents;
     }
 
-    public void setHostedAndSignedEvents(Set<Event> hostedAndSignedEvents) {
+    public void setHostedAndSignedEvents(List<Event> hostedAndSignedEvents) {
         this.hostedAndSignedEvents = hostedAndSignedEvents;
     }
 

@@ -1,12 +1,11 @@
 package bg.mycompany.eventbuddy.service.impl;
 
 import bg.mycompany.eventbuddy.model.binding.UserUpdateBindingModel;
-import bg.mycompany.eventbuddy.model.entity.Picture;
-import bg.mycompany.eventbuddy.model.entity.Role;
-import bg.mycompany.eventbuddy.model.entity.RoleEnum;
-import bg.mycompany.eventbuddy.model.entity.User;
+import bg.mycompany.eventbuddy.model.entity.*;
 import bg.mycompany.eventbuddy.model.service.UserRegistrationServiceModel;
 import bg.mycompany.eventbuddy.model.service.UserUpdateServiceModel;
+import bg.mycompany.eventbuddy.model.view.EventMiniDetailsViewModel;
+import bg.mycompany.eventbuddy.model.view.UserAllEvents;
 import bg.mycompany.eventbuddy.model.view.UserCurrentDetailsViewModel;
 import bg.mycompany.eventbuddy.repository.UserRepository;
 import bg.mycompany.eventbuddy.service.CloudinaryService;
@@ -26,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -151,5 +151,31 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.save(userToBeUpdated);
+    }
+
+    @Override
+    public UserAllEvents findCurrentUserAllEvents(String username) {
+
+        User currentUser = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+
+        UserAllEvents allEvents = new UserAllEvents();
+
+        for (Event event : currentUser.getHostedAndSignedEvents()) {
+            EventMiniDetailsViewModel currentEvent = new EventMiniDetailsViewModel();
+            currentEvent.setId(event.getId());
+            currentEvent.setName(event.getName());
+            currentEvent.setTicketPrice(event.getTicketPrice().toString());
+            currentEvent.setCategory(event.getCategory().getCategory().toString());
+            currentEvent.setStartDate(event.getStartDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            currentEvent.setStartTime(event.getStartDateTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+            currentEvent.setCoverPictureUrl(event.getCoverPicture().getUrl());
+            if (username.equals(event.getCreator().getUsername())) {
+                allEvents.getHostedEvents().add(currentEvent);
+            } else {
+                allEvents.getSignedEvents().add(currentEvent);
+            }
+        }
+
+        return allEvents;
     }
 }

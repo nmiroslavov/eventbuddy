@@ -3,9 +3,9 @@ package bg.mycompany.eventbuddy.web;
 import bg.mycompany.eventbuddy.model.binding.EventAddBindingModel;
 import bg.mycompany.eventbuddy.model.binding.EventUpdateBindingModel;
 import bg.mycompany.eventbuddy.model.entity.EventCategoryEnum;
-import bg.mycompany.eventbuddy.model.entity.RoleEnum;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
+import bg.mycompany.eventbuddy.model.view.EventAllViewModel;
 import bg.mycompany.eventbuddy.model.view.EventAttendeesViewModel;
 import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.service.EventService;
@@ -118,7 +118,7 @@ public class EventController {
         return "redirect:/events/" + eventId + "/details";
     }
 
-    @PreAuthorize("@eventServiceImpl.isUserAlreadySignedUpForEvent(#user, #eventId)")
+    @PreAuthorize("@eventServiceImpl.isUserSignedUpForEvent(#user.getUserIdentifier(), #eventId)")
     @PostMapping("/events/{eventId}/signup")
     public String signUpForEvent(@PathVariable Long eventId, @AuthenticationPrincipal SecurityUser user) {
 
@@ -127,7 +127,7 @@ public class EventController {
        return "redirect:/home";
     }
 
-    @PreAuthorize("@eventServiceImpl.isUserSignedUpForEvent(#user, #eventId)")
+    @PreAuthorize("!@eventServiceImpl.isUserSignedUpForEvent(#user.getUserIdentifier(), #eventId)")
     @PostMapping("/events/{eventId}/signout")
     public String signOutOfEvent(@PathVariable Long eventId, @AuthenticationPrincipal SecurityUser user) {
 
@@ -154,5 +154,13 @@ public class EventController {
 
 
         return "event-attendees";
+    }
+
+    @GetMapping("/events/explore")
+    public String getAllEvents(Model model) {
+        EventAllViewModel allEvents = eventService.findAllEvents();
+        model.addAttribute("allEvents", allEvents);
+
+        return "events-explore";
     }
 }

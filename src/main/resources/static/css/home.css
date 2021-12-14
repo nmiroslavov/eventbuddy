@@ -1,0 +1,19 @@
+#event {
+    margin-top: 50px;
+}
+
+#card {
+    max-width: 30rem;
+}
+
+#noHostedEvents{
+    margin-top: 150px;
+}
+
+#titleSpacing {
+    margin-top: 50px;
+}
+
+#noSignedEvents{
+    margin-top: 150px;
+}

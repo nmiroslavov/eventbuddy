@@ -4,9 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "events")
@@ -25,7 +23,7 @@ public class Event extends BaseEntity {
     private User creator;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<User> attendees = new LinkedHashSet<>();
+    private List<User> attendees = new ArrayList<>();
 
     @ManyToOne
     private EventCategory category;
@@ -74,11 +72,11 @@ public class Event extends BaseEntity {
         this.creator = creator;
     }
 
-    public Set<User> getAttendees() {
+    public List<User> getAttendees() {
         return attendees;
     }
 
-    public void setAttendees(Set<User> attendees) {
+    public void setAttendees(List<User> attendees) {
         this.attendees = attendees;
     }
 

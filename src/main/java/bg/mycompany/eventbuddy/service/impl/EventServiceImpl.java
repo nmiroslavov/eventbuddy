@@ -4,9 +4,7 @@ import bg.mycompany.eventbuddy.model.binding.EventUpdateBindingModel;
 import bg.mycompany.eventbuddy.model.entity.*;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
-import bg.mycompany.eventbuddy.model.view.EventAttendeeViewModel;
-import bg.mycompany.eventbuddy.model.view.EventAttendeesViewModel;
-import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
+import bg.mycompany.eventbuddy.model.view.*;
 import bg.mycompany.eventbuddy.repository.EventRepository;
 import bg.mycompany.eventbuddy.security.SecurityUser;
 import bg.mycompany.eventbuddy.service.EventCategoryService;
@@ -22,6 +20,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +41,7 @@ public class EventServiceImpl implements EventService {
         this.pictureService = pictureService;
     }
 
+    @Transactional
     @Override
     public Long addEvent(EventAddServiceModel eventAddServiceModel) throws IOException {
         Event currentEvent = modelMapper.map(eventAddServiceModel, Event.class);
@@ -53,16 +54,17 @@ public class EventServiceImpl implements EventService {
         currentEvent.setCoverPicture(picture);
 
         Event createdEvent = eventRepository.save(currentEvent);
+        creator.getHostedAndSignedEvents().add(createdEvent);
+
+        signUpUser(eventAddServiceModel.getCreatorUsername(), createdEvent.getId());
 
         return createdEvent.getId();
     }
 
     @Override
     public EventDetailsViewModel findEventByIdAndReturnView(Long eventId, String username) {
-        Event currentEvent = eventRepository.findById(eventId).orElse(null);
-        if (currentEvent == null) {
-            return null;
-        }
+        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+
         EventDetailsViewModel eventDetailsViewModel = modelMapper.map(currentEvent, EventDetailsViewModel.class);
         eventDetailsViewModel.setAttendeesCount(currentEvent.getAttendees().size());
         eventDetailsViewModel.setCoverPictureUrl(currentEvent.getCoverPicture().getUrl());
@@ -70,21 +72,23 @@ public class EventServiceImpl implements EventService {
         eventDetailsViewModel.setCategory(currentEvent.getCategory().getCategory().toString());
         eventDetailsViewModel.setStartDate(currentEvent.getStartDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         eventDetailsViewModel.setStartTime(currentEvent.getStartDateTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-        if (isOwner(username, eventId) || isAdmin(userService.findByUsername(username))) {
-            eventDetailsViewModel.setCanDelete(true);
-        }
-        if (isUserAlreadySignedUpForEventByUsername(username, eventId)) {
+
+
+        if (isUserSignedUpForEvent(username, eventId)) {
             eventDetailsViewModel.setCanSignUp(true);
             eventDetailsViewModel.setCanSignOut(false);
         } else {
             eventDetailsViewModel.setCanSignUp(false);
             eventDetailsViewModel.setCanSignOut(true);
         }
-        if (isOwner(username, eventId)) {
+
+        if (isOwner(username, eventId) || isEventCreator(username, eventId)) {
+            eventDetailsViewModel.setCanDelete(true);
             eventDetailsViewModel.setCanUpdate(true);
             eventDetailsViewModel.setCanSignUp(false);
             eventDetailsViewModel.setCanSignOut(false);
         }
+
         return eventDetailsViewModel;
     }
 
@@ -133,38 +137,6 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(eventToBeUpdated);
     }
 
-    private boolean isUserAlreadySignedUpForEventByUsername(String username, Long eventId) {
-        User currentUser = userService.findByUsername(username);
-        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
-
-        if (currentEvent.getCreator().getUsername().equals(currentUser.getUsername())) {
-            return true;
-        }
-
-        if (currentEvent.getAttendees().stream().anyMatch(u -> u.getUsername().equals(currentUser.getUsername()))) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean isUserAlreadySignedUpForEvent(SecurityUser user, Long eventId) {
-
-        User currentUser = userService.findByUsername(user.getUsername());
-        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
-
-        if (currentEvent.getCreator().getUsername().equals(currentUser.getUsername())) {
-            return false;
-        }
-
-        if (currentEvent.getAttendees().stream().anyMatch(u -> u.getUsername().equals(currentUser.getUsername()))) {
-            return false;
-        }
-
-        return true;
-    }
-
     @Override
     public void signUpUser(String userIdentifier, Long eventId) {
         User currentUser = userService.findByUsername(userIdentifier);
@@ -175,16 +147,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public boolean isUserSignedUpForEvent(SecurityUser user, Long eventId) {
+    public boolean isUserSignedUpForEvent(String username, Long eventId) {
 
-        User currentUser = userService.findByUsername(user.getUsername());
+        User currentUser = userService.findByUsername(username);
         Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
 
-        if (currentEvent.getAttendees().stream().anyMatch(u -> u.getUsername().equals(currentUser.getUsername()))) {
-            return true;
-        }
-
-        return false;
+        return !currentEvent.getAttendees().stream().anyMatch(u -> u.getUsername().equals(currentUser.getUsername()));
     }
 
     @Transactional
@@ -218,13 +186,43 @@ public class EventServiceImpl implements EventService {
             eventAttendeeViewModel.setUsername(attendee.getUsername());
             eventAttendeesViewModel.getAttendees().add(eventAttendeeViewModel);
         }
-
         return eventAttendeesViewModel;
     }
 
     @Override
     public void cleanEventsThatHavePassed() {
         eventRepository.deleteAllByPastDateTime();
+    }
+
+    @Override
+    public EventAllViewModel findAllEvents() {
+        EventAllViewModel eventAllViewModel = new EventAllViewModel();
+        try {
+            List<Event> all = eventRepository.findAll();
+            for (Event event : all) {
+                EventMiniDetailsViewModel currentEvent = new EventMiniDetailsViewModel();
+                currentEvent.setId(event.getId());
+                currentEvent.setName(event.getName());
+                currentEvent.setTicketPrice(event.getTicketPrice().toString());
+                currentEvent.setCategory(event.getCategory().getCategory().toString());
+                currentEvent.setStartDate(event.getStartDateTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                currentEvent.setStartTime(event.getStartDateTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+                currentEvent.setCoverPictureUrl(event.getCoverPicture().getUrl());
+                eventAllViewModel.getAllEvents().add(currentEvent);
+            }
+        } catch (RuntimeException e) {
+            throw new EventNotFoundException(Long.valueOf("1"));
+
+        }
+        return eventAllViewModel;
+    }
+
+    @Override
+    public boolean isEventCreator(String username, Long eventId) {
+
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+
+        return event.getCreator().getUsername().equals(username);
     }
 
 

@@ -1,6 +1,7 @@
 package bg.mycompany.eventbuddy.model.view;
 
 public class EventDetailsViewModel {
+    private Long id;
     private String name;
     private String description;
     private String coverPictureUrl;
@@ -120,5 +121,13 @@ public class EventDetailsViewModel {
 
     public void setCanUpdate(boolean canUpdate) {
         this.canUpdate = canUpdate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -7,22 +7,25 @@
     <link rel="stylesheet" href="/css/index.css">
 </head>
 
-<body class="bg-dark text-white">
-
+<body class="text-white bg-dark">
+<header th:replace="components/commons::navbar"></header>
 <div class="container">
-    <div class="row">
-        <header th:replace="components/commons::navbar"></header>
-    </div>
-
     <div id="starter" class="row max-auto">
         <div class="col text-center">
             <h1 class="display-2 text-center">Event Buddy</h1>
-            <p class="lead">The only platform you will ever need</p>
-            <a th:href="@{/users/register}" role="button" class="btn btn-light btn-lg">Get Started</a>
+            <p class="lead">Experience events like never before</p>
+            <a th:href="@{/users/register}" role="button" class="btn btn-secondary btn-lg">Get Started</a>
+            <footer class="mt-auto text-white-50">
+                <p>&copy; 2021 Event Buddy </p>
+            </footer>
         </div>
     </div>
 
 </div>
+
+
+
+
 
 
 
