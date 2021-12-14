@@ -12,7 +12,7 @@ public class LoginController {
 
     @GetMapping("/users/login")
     public String getLoginPage() {
-        return "login";
+        return "user-login";
     }
 
     @PostMapping("/users/login-error")

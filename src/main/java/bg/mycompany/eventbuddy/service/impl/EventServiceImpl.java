@@ -64,6 +64,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventDetailsViewModel findEventByIdAndReturnView(Long eventId, String username) {
         Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+        User currentUser = userService.findByUsername(username);
 
         EventDetailsViewModel eventDetailsViewModel = modelMapper.map(currentEvent, EventDetailsViewModel.class);
         eventDetailsViewModel.setAttendeesCount(currentEvent.getAttendees().size());
@@ -87,6 +88,16 @@ public class EventServiceImpl implements EventService {
             eventDetailsViewModel.setCanUpdate(true);
             eventDetailsViewModel.setCanSignUp(false);
             eventDetailsViewModel.setCanSignOut(false);
+        }
+
+        if (isAdmin(currentUser) && !isEventCreator(username, eventId)) {
+            if (isUserSignedUpForEvent(username, eventId)) {
+                eventDetailsViewModel.setCanSignUp(true);
+                eventDetailsViewModel.setCanSignOut(false);
+            } else {
+                eventDetailsViewModel.setCanSignUp(false);
+                eventDetailsViewModel.setCanSignOut(true);
+            }
         }
 
         return eventDetailsViewModel;

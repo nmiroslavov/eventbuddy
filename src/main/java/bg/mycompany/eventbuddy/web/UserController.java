@@ -35,7 +35,7 @@ public class UserController {
 
         model.addAttribute("currentUserDetails", userCurrentDetailsViewModel);
 
-        return "my-profile";
+        return "user-my-profile";
     }
 
     @GetMapping("/users/myprofile/update")
@@ -44,12 +44,12 @@ public class UserController {
 
         model.addAttribute("userUpdateBindingModel", userUpdateBindingModel);
 
-        return "my-profile-update";
+        return "user-my-profile-update";
     }
 
     @GetMapping("/users/myprofile/update/errors")
     public String updateProfileErrors() {
-        return "my-profile-update";
+        return "user-my-profile-update";
     }
 
     @PatchMapping("/users/myprofile/update")

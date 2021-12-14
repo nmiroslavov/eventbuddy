@@ -30,7 +30,7 @@ public class RegistrationController {
 
     @GetMapping("/users/register")
     public String getRegistrationPage() {
-        return "register";
+        return "user-register";
     }
 
     @PostMapping("/users/register")
