@@ -18,6 +18,6 @@ public class StatsController {
     public String getStatsPage(Model model) {
         model.addAttribute("stats", statsService.getStats());
 
-        return "stats";
+        return "statistics";
     }
 }

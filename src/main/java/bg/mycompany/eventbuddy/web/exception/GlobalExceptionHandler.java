@@ -10,7 +10,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EventNotFoundException.class)
     public ModelAndView handleEventNotFoundException(EventNotFoundException e) {
-        ModelAndView modelAndView = new ModelAndView("event-not-found");
+        ModelAndView modelAndView = new ModelAndView("error-event-not-found");
         modelAndView.addObject("message", e.getMessage());
         modelAndView.setStatus(HttpStatus.NOT_FOUND);
         return modelAndView;
@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ModelAndView handleUserNotFoundException(UserNotFoundException e) {
-        ModelAndView modelAndView = new ModelAndView("user-not-found");
+        ModelAndView modelAndView = new ModelAndView("error-user-not-found");
         modelAndView.addObject("message", e.getMessage());
         modelAndView.setStatus(HttpStatus.NOT_FOUND);
         return modelAndView;

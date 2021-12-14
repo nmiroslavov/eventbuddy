@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Oh no, a problem</title>
@@ -10,10 +10,9 @@
 <div class="container">
     <div id="starter" class="row max-auto">
         <div class="col text-center">
-            <h1 class="display-2 text-center">You have stumbled upon something you can't access</h1>
-            <p class="lead">Maybe try visiting the home page?</p>
-            <a sec:authorize="isAuthenticated()" th:href="@{/home}" role="button" class="btn btn-success btn-lg">Go to home</a>
-            <a sec:authorize="!isAuthenticated()" th:href="@{/}" role="button" class="btn btn-success btn-lg">Go to home</a>
+            <h1 class="display-2 text-center" th:text="*{message}"></h1>
+            <p class="lead">Maybe try visiting the explore page?</p>
+            <a th:href="@{/events/explore}" role="button" class="btn btn-success btn-lg">Go to explore</a>
             <footer class="mt-auto text-white-50">
                 <p>&copy; 2021 Event Buddy </p>
             </footer>
