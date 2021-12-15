@@ -2,7 +2,6 @@ package bg.mycompany.eventbuddy.service.impl;
 
 import bg.mycompany.eventbuddy.model.entity.Picture;
 import bg.mycompany.eventbuddy.repository.PictureRepository;
-import bg.mycompany.eventbuddy.service.CloudinaryImage;
 import bg.mycompany.eventbuddy.service.CloudinaryService;
 import bg.mycompany.eventbuddy.service.PictureService;
 import org.springframework.stereotype.Service;
@@ -92,5 +91,10 @@ public class PictureServiceImpl implements PictureService {
         pictureRepository.save(originalPicture);
 
         return originalPicture;
+    }
+
+    @Override
+    public Picture getDefaultProfilePicture() {
+        return pictureRepository.findByPublicId(cloudinaryService.getDefaultPicturePublicId());
     }
 }

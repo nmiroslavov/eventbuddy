@@ -1,8 +1,9 @@
-package bg.mycompany.eventbuddy.service;
+package bg.mycompany.eventbuddy.service.impl;
 
 public class CloudinaryImage {
     private String url;
     private String publicId;
+
 
     public CloudinaryImage() {
     }

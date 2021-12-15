@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
             Role adminRole = roleService.findByRole(RoleEnum.ADMIN);
             admin.setRoles(Set.of(adminRole));
             admin.setProfileCreationDateTime(LocalDateTime.now());
-            Picture picture = cloudinaryService.getDefaultPicture();
+            Picture picture = pictureService.getDefaultProfilePicture();
             admin.setProfilePicture(picture);
             userRepository.save(admin);
         }
@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
         Role userRole = roleService.findByRole(RoleEnum.USER);
         user.setRoles(Set.of(userRole));
         user.setProfileCreationDateTime(LocalDateTime.now());
-        Picture defaultProfilePicture = cloudinaryService.getDefaultPicture();
+        Picture defaultProfilePicture = pictureService.getDefaultProfilePicture();
         user.setProfilePicture(defaultProfilePicture);
 
         userRepository.save(user);

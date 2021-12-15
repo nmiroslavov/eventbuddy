@@ -18,4 +18,6 @@ public interface PictureService {
     Picture updateDefaultProfilePicture(MultipartFile file) throws IOException;
 
     Picture updateProfilePicture(MultipartFile file, Picture originalPicture) throws IOException;
+
+    Picture getDefaultProfilePicture();
 }
