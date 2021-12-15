@@ -5,10 +5,12 @@ import bg.mycompany.eventbuddy.model.entity.RoleEnum;
 import bg.mycompany.eventbuddy.repository.RoleRepository;
 import bg.mycompany.eventbuddy.service.RoleService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;

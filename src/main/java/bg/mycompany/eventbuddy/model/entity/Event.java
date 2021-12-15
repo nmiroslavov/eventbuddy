@@ -22,7 +22,7 @@ public class Event extends BaseEntity {
     @ManyToOne
     private User creator;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<User> attendees = new ArrayList<>();
 
     @ManyToOne
@@ -37,9 +37,8 @@ public class Event extends BaseEntity {
     @Column(name = "ticket_price", nullable = false)
     private BigDecimal ticketPrice;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "event")
-    private Set<Comment> comments;
-
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "event")
+    private List<Comment> comments = new ArrayList<>();
     public Event() {
     }
 
@@ -115,11 +114,11 @@ public class Event extends BaseEntity {
         this.ticketPrice = ticketPrice;
     }
 
-    public Set<Comment> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(Set<Comment> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
 }

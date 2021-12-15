@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
@@ -38,7 +39,7 @@ public class EventServiceImpl implements EventService {
         this.pictureService = pictureService;
     }
 
-    @Transactional
+//    @Transactional
     @Override
     public Long addEvent(EventAddServiceModel eventAddServiceModel) throws IOException {
         Event currentEvent = modelMapper.map(eventAddServiceModel, Event.class);
@@ -163,7 +164,7 @@ public class EventServiceImpl implements EventService {
         return !currentEvent.getAttendees().stream().anyMatch(u -> u.getUsername().equals(currentUser.getUsername()));
     }
 
-    @Transactional
+//    @Transactional
     @Override
     public void signOutUser(String userIdentifier, Long eventId) {
         User currentUser = userService.findByUsername(userIdentifier);
@@ -173,7 +174,7 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(currentEvent);
     }
 
-    @Transactional
+//    @Transactional
     @Override
     public void deleteEvent(Long eventId) {
         Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));

@@ -32,7 +32,7 @@ public class User extends BaseEntity {
     @OneToOne()
     private Picture profilePicture;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "attendees")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "attendees")
     private List<Event> hostedAndSignedEvents = new ArrayList<>();
 
     @Column(name = "profile_creation_date_time", nullable = false)
