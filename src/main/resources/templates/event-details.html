@@ -35,14 +35,11 @@
                                     <form th:if="*{isCanSignOut()}" class="d-inline" th:action="@{/events/{eventId}/signout(eventId=${eventId})}" th:method="post">
                                         <button class="btn btn-warning">Sign out</button>
                                     </form>
+                                    <a th:href="@{/events/{eventId}/details/comments(eventId=${eventId})}" class="card-link btn btn-primary">Comments</a>
                                 </div>
                                 <div class="card-footer text-muted">
-                                    2 days ago
+<!--                                    2 days ago-->
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -51,98 +48,10 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--    <div class="container">-->
-<!--        <div class="row">-->
-<!--            <header th:replace="components/commons::navbar"></header>-->
-<!--        </div>-->
-<!--        <div class="row mt-5"></div>-->
-<!--        <div class="row mt-3"></div>-->
-
-<!--&lt;!&ndash;        <div class="col d-flex justify-content-center">&ndash;&gt;-->
-<!--&lt;!&ndash;            <div class="card text-white bg-secondary mb-4 w-50" style="width: 18rem;" th:object="${event}">&ndash;&gt;-->
-<!--&lt;!&ndash;                <img th:src="*{coverPictureUrl}" class="card-img-top img-fluid">&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="card-body">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <h5 class="card-title" th:text="*{name}">Card title</h5>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <p class="card-text" th:text="*{description}">Some quick example text to build on the card title and make up the bulk of the card's content.</p>&ndash;&gt;-->
-<!--&lt;!&ndash;                </div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <ul class="list-group list-group-flush">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <li class="list-group-item" th:text="'Category ' + *{category}">An item</li>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <li class="list-group-item" th:text="'Ticket price: ' + *{ticketPrice} + '$'">A second item</li>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <li class="list-group-item" th:text="'Starting on ' + *{startDate} + ' at ' + *{startTime}">A third item</li>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <li class="list-group-item" th:text="*{attendeesCount} + ' have signed up'"></li>&ndash;&gt;-->
-<!--&lt;!&ndash;                </ul>&ndash;&gt;-->
-<!--&lt;!&ndash;                <div class="card-body">&ndash;&gt;-->
-<!--&lt;!&ndash;                    <a href="#" class="card-link">Card link</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <a href="#" class="card-link">Another link</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                </div>&ndash;&gt;-->
-<!--&lt;!&ndash;            </div>&ndash;&gt;-->
-<!--&lt;!&ndash;        </div>&ndash;&gt;-->
-<!--        <div class="col d-flex justify-content-center">-->
-<!--        <div class="card mb-3 text-white bg-secondary" style="max-width: 740px;" th:object="${event}">-->
-<!--            <div class="row g-0">-->
-<!--                <div class="col-md-4">-->
-<!--                    <img th:src="*{coverPictureUrl}" class="img-fluid rounded-start" alt="...">-->
-<!--                </div>-->
-<!--                <div class="col-md-8">-->
-<!--                    <div class="card-body">-->
-<!--                        <h3 class="card-title" th:text="*{name}">Card title</h3>-->
-<!--                        <br>-->
-<!--                        <p class="card-text" th:text="*{description}">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
-<!--                        <p class="card-text" th:text="'Category: ' + *{category}">An item</p>-->
-<!--                        <p class="card-text" th:text="'Created by: ' + *{creatorUsername}">An item</p>-->
-<!--                        <p class="card-text" th:text="'Ticket price: ' + *{ticketPrice} + ' $'">A second item</p>-->
-<!--                        <p class="card-text" th:text="'Starting on ' + *{startDate} + ' at ' + *{startTime}">A third item</p>-->
-<!--                        <p class="card-text" th:text="*{attendeesCount} + ' users have signed up'"></p>-->
-<!--                        <div class="row">-->
-<!--                            <div class="col" th:if="*{isCanSignUp()}">-->
-<!--                                <form th:action="@{/events/{eventId}/signup(eventId=${eventId})}" th:method="post">-->
-<!--                                    <input type="submit" class="btn btn-dark" value="Sign up">-->
-<!--                                </form>-->
-<!--                            </div>-->
-<!--                            <div class="col" th:if="*{isCanSignOut()}">-->
-<!--                                <form th:action="@{/events/{eventId}/signout(eventId=${eventId})}" th:method="post">-->
-<!--                                    <input type="submit" class="btn btn-dark" value="Sign out">-->
-<!--                                </form>-->
-<!--                            </div>-->
-<!--                            <div class="col" th:if="*{isCanDelete()}">-->
-<!--                                <form th:action="@{/events/{eventId}(eventId=${eventId})}" th:method="delete">-->
-<!--                                    <input type="submit" class="btn btn-danger" value="Delete">-->
-<!--                                </form>-->
-<!--                            </div>-->
-<!--                            <div class="col" th:if="*{isCanUpdate()}">-->
-<!--                                <form th:action="@{/events/{eventId}/edit(eventId=${eventId})}" th:method="get">-->
-<!--                                    <input type="submit" class="btn btn-dark" value="Update">-->
-<!--                                </form>-->
-<!--                            </div>-->
-<!--                            <div class="col">-->
-<!--                                <form th:action="@{/events/{eventId}/details/attendees(eventId=${eventId})}" th:method="get">-->
-<!--                                    <input type="submit" class="btn btn-dark" value="See attendees">-->
-<!--                                </form>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        </div>-->
-
-
-<!--    </div>-->
+    <div>
+        <span id="commentContainer"></span>
+    </div>
+    <script th:src="@{/js/comment.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>

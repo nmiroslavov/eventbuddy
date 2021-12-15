@@ -1,13 +1,15 @@
 package bg.mycompany.eventbuddy.web;
 
+import bg.mycompany.eventbuddy.model.binding.CommentAddBindingModel;
 import bg.mycompany.eventbuddy.model.binding.EventAddBindingModel;
 import bg.mycompany.eventbuddy.model.binding.EventUpdateBindingModel;
 import bg.mycompany.eventbuddy.model.entity.EventCategoryEnum;
+import bg.mycompany.eventbuddy.model.service.CommentAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
 import bg.mycompany.eventbuddy.model.view.EventAllViewModel;
-import bg.mycompany.eventbuddy.model.view.EventAttendeesViewModel;
 import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
+import bg.mycompany.eventbuddy.service.CommentService;
 import bg.mycompany.eventbuddy.service.EventService;
 import bg.mycompany.eventbuddy.security.SecurityUser;
 import bg.mycompany.eventbuddy.web.exception.EventNotFoundException;
@@ -28,10 +30,12 @@ public class EventController {
 
     private final EventService eventService;
     private final ModelMapper modelMapper;
+    private final CommentService commentService;
 
-    public EventController(EventService eventService, ModelMapper modelMapper) {
+    public EventController(EventService eventService, ModelMapper modelMapper, CommentService commentService) {
         this.eventService = eventService;
         this.modelMapper = modelMapper;
+        this.commentService = commentService;
     }
 
     @ModelAttribute("eventAddBindingModel")
@@ -62,6 +66,36 @@ public class EventController {
         Long eventId = eventService.addEvent(eventAddServiceModel);
 
         return "redirect:/events/" + eventId + "/details";
+    }
+
+    @GetMapping("/events/{eventId}/details/comments")
+    public String getEventCommentsPage(@PathVariable Long eventId, Model model) {
+        model.addAttribute("eventId", eventId);
+
+        return "event-comments";
+    }
+
+    @PostMapping("/events/{eventId}/details/comments")
+    public String addComment(@PathVariable Long eventId, @Valid CommentAddBindingModel commentAddBindingModel,
+                             BindingResult bindingResult , @AuthenticationPrincipal SecurityUser user,
+                             RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("commentAddBindingModel", commentAddBindingModel);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.commentAddBindingModel", bindingResult);
+
+            return "redirect:/events/" + eventId + "/details/comments";
+        }
+
+        CommentAddServiceModel commentAddServiceModel = new CommentAddServiceModel();
+        commentAddServiceModel.setUsername(user.getUserIdentifier());
+        commentAddServiceModel.setTextContent(commentAddBindingModel.getTextContent());
+        commentAddServiceModel.setEventId(eventId);
+
+        commentService.createComment(commentAddServiceModel);
+
+
+        return "redirect:/events/" + eventId + "/details/comments";
     }
 
     @GetMapping("/events/{eventId}/details")
@@ -146,16 +180,6 @@ public class EventController {
         return "redirect:/home";
     }
 
-    @GetMapping("/events/{eventId}/details/attendees")
-    public String getEventAttendees(@PathVariable Long eventId, Model model) {
-
-        EventAttendeesViewModel attendees = eventService.getEventAttendees(eventId);
-        model.addAttribute("attendees", attendees);
-
-
-        return "event-attendees";
-    }
-
     @GetMapping("/events/explore")
     public String getAllEvents(Model model) {
         EventAllViewModel allEvents = eventService.findAllEvents();
@@ -163,4 +187,5 @@ public class EventController {
 
         return "events-explore";
     }
+
 }

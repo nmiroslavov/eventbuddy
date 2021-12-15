@@ -37,6 +37,9 @@ public class Event extends BaseEntity {
     @Column(name = "ticket_price", nullable = false)
     private BigDecimal ticketPrice;
 
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "event")
+    private Set<Comment> comments;
+
     public Event() {
     }
 
@@ -110,5 +113,13 @@ public class Event extends BaseEntity {
 
     public void setTicketPrice(BigDecimal ticketPrice) {
         this.ticketPrice = ticketPrice;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 }

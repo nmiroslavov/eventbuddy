@@ -6,7 +6,6 @@ import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
 import bg.mycompany.eventbuddy.model.view.*;
 import bg.mycompany.eventbuddy.repository.EventRepository;
-import bg.mycompany.eventbuddy.security.SecurityUser;
 import bg.mycompany.eventbuddy.service.EventCategoryService;
 import bg.mycompany.eventbuddy.service.EventService;
 import bg.mycompany.eventbuddy.service.PictureService;
@@ -17,10 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -185,22 +182,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventAttendeesViewModel getEventAttendees(Long eventId) {
-
-        Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
-        EventAttendeesViewModel eventAttendeesViewModel = new EventAttendeesViewModel();
-
-        for (User attendee : currentEvent.getAttendees()) {
-            EventAttendeeViewModel eventAttendeeViewModel = new EventAttendeeViewModel();
-            eventAttendeeViewModel.setUserId(attendee.getId());
-            eventAttendeeViewModel.setProfilePicture(attendee.getProfilePicture().getUrl());
-            eventAttendeeViewModel.setUsername(attendee.getUsername());
-            eventAttendeesViewModel.getAttendees().add(eventAttendeeViewModel);
-        }
-        return eventAttendeesViewModel;
-    }
-
-    @Override
     public void cleanEventsThatHavePassed() {
         eventRepository.deleteAllByPastDateTime();
     }
@@ -234,6 +215,12 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
 
         return event.getCreator().getUsername().equals(username);
+    }
+
+    @Override
+    public Event findEventById(Long eventId) {
+
+        return eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
     }
 
 
