@@ -1,5 +1,5 @@
 package bg.mycompany.eventbuddy.model.entity;
 
 public enum RoleEnum {
-    ADMIN, USER;
+    ADMIN, MODERATOR, USER;
 }

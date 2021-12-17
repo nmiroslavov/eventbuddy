@@ -108,7 +108,7 @@ public class EventController {
         return "event-details";
     }
 
-    @PreAuthorize("isOwner(#eventId)")
+    @PreAuthorize("@eventServiceImpl.isOwner(#user.userIdentifier, #eventId) || @userServiceImpl.isModeratorByUsername(#user.userIdentifier)")
     @GetMapping("/events/{eventId}/edit")
     public String getEventEditPage(@PathVariable Long eventId, Model model, @AuthenticationPrincipal SecurityUser user) {
         EventDetailsViewModel eventDetailsViewModel = eventService.findEventByIdAndReturnView(eventId, user.getUserIdentifier());
@@ -124,19 +124,20 @@ public class EventController {
         return "event-update";
     }
 
-    @PreAuthorize("isOwner(#eventId)")
+    @PreAuthorize("@eventServiceImpl.isOwner(#user.userIdentifier, #eventId) || @userServiceImpl.isModeratorByUsername(#user.userIdentifier)")
     @GetMapping("/events/{eventId}/edit/errors")
-    public String editEventErrors(@PathVariable Long eventId, Model model) {
+    public String editEventErrors(@PathVariable Long eventId, Model model, @AuthenticationPrincipal SecurityUser user) {
         model.addAttribute("categories", EventCategoryEnum.values());
 
         return "event-update";
     }
 
-    @PreAuthorize("isOwner(#eventId)")
+    @PreAuthorize("@eventServiceImpl.isOwner(#user.userIdentifier, #eventId) || @userServiceImpl.isModeratorByUsername(#user.userIdentifier)")
     @PatchMapping("/events/{eventId}/edit")
     public String editEvent(@PathVariable Long eventId, @Valid EventUpdateBindingModel eventUpdateBindingModel,
                             BindingResult bindingResult,
-                            RedirectAttributes redirectAttributes) throws IOException {
+                            RedirectAttributes redirectAttributes,
+                            @AuthenticationPrincipal SecurityUser user) throws IOException {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("eventUpdateBindingModel", eventUpdateBindingModel);

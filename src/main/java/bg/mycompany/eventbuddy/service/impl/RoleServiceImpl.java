@@ -2,6 +2,7 @@ package bg.mycompany.eventbuddy.service.impl;
 
 import bg.mycompany.eventbuddy.model.entity.Role;
 import bg.mycompany.eventbuddy.model.entity.RoleEnum;
+import bg.mycompany.eventbuddy.model.entity.User;
 import bg.mycompany.eventbuddy.repository.RoleRepository;
 import bg.mycompany.eventbuddy.service.RoleService;
 import org.springframework.stereotype.Service;
@@ -27,13 +28,31 @@ public class RoleServiceImpl implements RoleService {
             Role user = new Role();
             user.setRole(RoleEnum.USER);
 
-            roleRepository.saveAll(List.of(admin, user));
+            Role moderator = new Role();
+            user.setRole(RoleEnum.MODERATOR);
+
+            roleRepository.saveAll(List.of(admin, user, moderator));
         }
     }
 
     @Override
     public Role findByRole(RoleEnum role) {
         return roleRepository.findRoleByRole(role);
+    }
+
+    @Override
+    public User removeModeratorRole(User user) {
+        Role moderatorRole = roleRepository.findRoleByRole(RoleEnum.MODERATOR);
+        user.getRoles().remove(moderatorRole);
+        return user;
+    }
+
+    @Override
+    public User addModeratorRole(User user) {
+
+        Role moderatorRole = roleRepository.findRoleByRole(RoleEnum.MODERATOR);
+        user.getRoles().add(moderatorRole);
+        return user;
     }
 
 

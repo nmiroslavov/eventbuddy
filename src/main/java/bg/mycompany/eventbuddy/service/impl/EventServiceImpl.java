@@ -97,6 +97,9 @@ public class EventServiceImpl implements EventService {
                 eventDetailsViewModel.setCanSignOut(true);
             }
         }
+        if (userService.isModerator(currentUser)) {
+            eventDetailsViewModel.setCanUpdate(true);
+        }
 
         return eventDetailsViewModel;
     }

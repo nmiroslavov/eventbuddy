@@ -6,12 +6,15 @@ import bg.mycompany.eventbuddy.model.view.UserCurrentDetailsViewModel;
 import bg.mycompany.eventbuddy.security.SecurityUser;
 import bg.mycompany.eventbuddy.service.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -67,5 +70,20 @@ public class UserController {
         userService.updateUser(userUpdateServiceModel, user.getUserIdentifier());
 
         return "redirect:/users/myprofile";
+    }
+
+    @GetMapping("/users/moderators")
+    public String getModeratorsPage(Model model) {
+
+        model.addAttribute("allUsers", userService.findAllRegularUsers());
+
+        return "user-moderators";
+    }
+
+    @PreAuthorize("@userServiceImpl.isAdmin(#user.userIdentifier)")
+    @PostMapping("/users/moderators/{userId}")
+    public String changeRole(@PathVariable Long userId, @AuthenticationPrincipal SecurityUser user) {
+        userService.changeRole(userId);
+        return "redirect:/users/moderators";
     }
 }

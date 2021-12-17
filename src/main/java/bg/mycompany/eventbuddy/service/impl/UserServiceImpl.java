@@ -4,9 +4,7 @@ import bg.mycompany.eventbuddy.model.binding.UserUpdateBindingModel;
 import bg.mycompany.eventbuddy.model.entity.*;
 import bg.mycompany.eventbuddy.model.service.UserRegistrationServiceModel;
 import bg.mycompany.eventbuddy.model.service.UserUpdateServiceModel;
-import bg.mycompany.eventbuddy.model.view.EventMiniDetailsViewModel;
-import bg.mycompany.eventbuddy.model.view.UserAllEvents;
-import bg.mycompany.eventbuddy.model.view.UserCurrentDetailsViewModel;
+import bg.mycompany.eventbuddy.model.view.*;
 import bg.mycompany.eventbuddy.repository.UserRepository;
 import bg.mycompany.eventbuddy.service.CloudinaryService;
 import bg.mycompany.eventbuddy.service.PictureService;
@@ -180,4 +178,66 @@ public class UserServiceImpl implements UserService {
 
         return allEvents;
     }
+
+    @Override
+    public UserAllByRoleViewModel findAllRegularUsers() {
+        List<User> allUsers = userRepository.findAll();
+        UserAllByRoleViewModel allByRoleViewModel = new UserAllByRoleViewModel();
+        for (User currentUser : allUsers) {
+            if (currentUser.getRoles().contains(roleService.findByRole(RoleEnum.ADMIN))) {
+                continue;
+            }
+            UserByRoleViewModel user = modelMapper.map(currentUser, UserByRoleViewModel.class);
+            if (currentUser.getRoles().contains(roleService.findByRole(RoleEnum.MODERATOR))) {
+                user.setRoleEnum("Moderator");
+            } else {
+                user.setRoleEnum("User");
+            }
+            allByRoleViewModel.getUsers().add(user);
+        }
+
+        return allByRoleViewModel;
+    }
+
+    @Transactional
+    @Override
+    public void changeRole(Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("username"));
+        if (user.getRoles().contains(roleService.findByRole(RoleEnum.MODERATOR))) {
+            User updatedUser = roleService.removeModeratorRole(user);
+            userRepository.save(updatedUser);
+        } else {
+            User updatedUser = roleService.addModeratorRole(user);
+            userRepository.save(updatedUser);
+        }
+    }
+
+    @Override
+    public boolean isAdmin(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        if (user.getRoles().contains(roleService.findByRole(RoleEnum.ADMIN))) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isModerator(User user) {
+        if (user.getRoles().contains(roleService.findByRole(RoleEnum.MODERATOR))) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isModeratorByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username));
+        if (user.getRoles().contains(roleService.findByRole(RoleEnum.MODERATOR))) {
+            return true;
+        }
+        return false;
+    }
+
+
 }
