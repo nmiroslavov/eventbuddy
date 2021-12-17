@@ -5,6 +5,8 @@ import bg.mycompany.eventbuddy.model.entity.Picture;
 import bg.mycompany.eventbuddy.model.entity.Role;
 import bg.mycompany.eventbuddy.model.entity.RoleEnum;
 import bg.mycompany.eventbuddy.model.entity.User;
+import bg.mycompany.eventbuddy.model.view.UserAllByRoleViewModel;
+import bg.mycompany.eventbuddy.model.view.UserByRoleViewModel;
 import bg.mycompany.eventbuddy.model.view.UserCurrentDetailsViewModel;
 import bg.mycompany.eventbuddy.repository.UserRepository;
 import bg.mycompany.eventbuddy.security.SecurityUserServiceImpl;
@@ -27,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -37,16 +40,23 @@ class UserServiceImplTest {
     private UserService userService;
     private Role adminRole;
     private Role userRole;
+    private Role moderatorRole;
     private Picture profilePicture;
     private ModelMapper modelMapper = new ModelMapper();
 
     @Mock
     private UserRepository mockedUserRepository;
+    @Mock
     private RoleService mockedRoleService;
+    @Mock
     private SecurityUserServiceImpl mockedSecurityUserService;
+    @Mock
     private PasswordEncoder mockedPasswordEncoder;
+    @Mock
     private CloudinaryService mockedCloudinaryService;
+    @Mock
     private PictureService mockedPictureService;
+
 
     @BeforeEach
     public void init() {
@@ -57,6 +67,9 @@ class UserServiceImplTest {
         this.userRole = new Role();
         this.userRole.setRole(RoleEnum.USER);
 
+        this.moderatorRole = new Role();
+        this.moderatorRole.setRole(RoleEnum.MODERATOR);
+
         this.profilePicture = new Picture();
         this.profilePicture.setPublicId("default_id");
         this.profilePicture.setUrl("default_url");
@@ -66,7 +79,7 @@ class UserServiceImplTest {
             setUsername("test");
             setEmail("test@mail.bg");
             setPassword("password");
-            setRoles(Set.of(userRole, adminRole));
+            setRoles(Set.of(userRole, adminRole, moderatorRole));
             setFirstName("John");
             setLastName("Doe");
             setAge(21);
@@ -175,4 +188,45 @@ class UserServiceImplTest {
                 () -> userService.getUserUpdateBindingModel("invalid-username"));
     }
 
+    @Test
+    void isModeratorByUsername_ShouldReturnTrue() {
+        Mockito.when(mockedUserRepository.findByUsername(userToTest.getUsername())).thenReturn(Optional.of(userToTest));
+        Mockito.when(mockedRoleService.findByRole(RoleEnum.MODERATOR)).thenReturn(moderatorRole);
+        boolean result = userService.isModeratorByUsername(userToTest.getUsername());
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void isModerator_ShouldReturnTrue() {
+        Mockito.when(mockedRoleService.findByRole(RoleEnum.MODERATOR)).thenReturn(moderatorRole);
+        boolean result = userService.isModerator(userToTest);
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void isAdmin_ShouldReturnTrue() {
+        Mockito.when(mockedUserRepository.findByUsername(userToTest.getUsername())).thenReturn(Optional.of(userToTest));
+        Mockito.when(mockedRoleService.findByRole(RoleEnum.ADMIN)).thenReturn(adminRole);
+        userService.isAdmin(userToTest.getUsername());
+    }
+
+    @Test
+    void changeRole_AddModerator() {
+        Mockito.when(mockedUserRepository.findById(userToTest.getId())).thenReturn(Optional.of(userToTest));
+        Mockito.when(mockedRoleService.findByRole(RoleEnum.MODERATOR)).thenReturn(moderatorRole);
+        Mockito.when(mockedRoleService.removeModeratorRole(userToTest)).thenReturn(userToTest);
+        userService.changeRole(userToTest.getId());
+        Assertions.assertTrue(userToTest.getRoles().contains(moderatorRole));
+
+    }
+
+    @Test
+    void changeRole_RemoveModerator() {
+        userToTest.setRoles(Set.of(userRole));
+        Mockito.when(mockedUserRepository.findById(userToTest.getId())).thenReturn(Optional.of(userToTest));
+        Mockito.when(mockedRoleService.findByRole(RoleEnum.MODERATOR)).thenReturn(moderatorRole);
+        Mockito.when(mockedRoleService.addModeratorRole(userToTest)).thenReturn(userToTest);
+        userService.changeRole(userToTest.getId());
+        Assertions.assertFalse(userToTest.getRoles().contains(moderatorRole));
+    }
 }
