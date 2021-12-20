@@ -17,7 +17,7 @@ public class EventUpdateBindingModel {
     private String name;
 
 
-    @Size(min = 10, max = 200)
+    @Size(min = 10, max = 400)
     private String description;
 
 

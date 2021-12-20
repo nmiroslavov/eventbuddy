@@ -14,7 +14,7 @@ public class EventAddBindingModel {
     private String name;
 
     @NotNull
-    @Size(min = 10, max = 200)
+    @Size(min = 10, max = 400)
     private String description;
 
     @NotNull
