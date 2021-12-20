@@ -1,12 +1,10 @@
 package bg.mycompany.eventbuddy.service.impl;
 
 import bg.mycompany.eventbuddy.model.binding.UserUpdateBindingModel;
-import bg.mycompany.eventbuddy.model.entity.Picture;
-import bg.mycompany.eventbuddy.model.entity.Role;
-import bg.mycompany.eventbuddy.model.entity.RoleEnum;
-import bg.mycompany.eventbuddy.model.entity.User;
+import bg.mycompany.eventbuddy.model.entity.*;
+import bg.mycompany.eventbuddy.model.service.UserUpdateServiceModel;
 import bg.mycompany.eventbuddy.model.view.UserAllByRoleViewModel;
-import bg.mycompany.eventbuddy.model.view.UserByRoleViewModel;
+import bg.mycompany.eventbuddy.model.view.UserAllEvents;
 import bg.mycompany.eventbuddy.model.view.UserCurrentDetailsViewModel;
 import bg.mycompany.eventbuddy.repository.UserRepository;
 import bg.mycompany.eventbuddy.security.SecurityUserServiceImpl;
@@ -23,9 +21,13 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -229,4 +231,107 @@ class UserServiceImplTest {
         userService.changeRole(userToTest.getId());
         Assertions.assertFalse(userToTest.getRoles().contains(moderatorRole));
     }
+
+    @Test
+    void findAllRegularUsers_ShouldReturnEmptyViewModel() {
+
+        User currentUser = new User() {{
+            setId(1L);
+            setUsername("test");
+            setEmail("test@mail.bg");
+            setPassword("password");
+            setRoles(Set.of(userRole, moderatorRole));
+            setFirstName("John");
+            setLastName("Doe");
+            setAge(21);
+            setProfilePicture(profilePicture);
+            setHostedAndSignedEvents(new ArrayList<>());
+            setProfileCreationDateTime(LocalDateTime.of(2021, 12, 12,12,12));
+        }};
+
+        Mockito.when(mockedUserRepository.findAll()).thenReturn(List.of(currentUser));
+        Mockito.when(mockedRoleService.findByRole(RoleEnum.MODERATOR)).thenReturn(moderatorRole);
+        Mockito.when(mockedRoleService.findByRole(RoleEnum.ADMIN)).thenReturn(adminRole);
+        UserAllByRoleViewModel result = userService.findAllRegularUsers();
+        Assertions.assertEquals(1, result.getUsers().size());
+    }
+
+    @Test
+    void findCurrentUserAllEvents_ShouldReturnViewModel() {
+        Mockito.when(mockedUserRepository.findByUsername(userToTest.getUsername())).thenReturn(Optional.of(userToTest));
+        Event currentEvent = new Event() {{
+            setId(1L);
+            setCreator(userToTest);
+            setCategory(new EventCategory() {{
+                setId(1L);
+                setCategory(EventCategoryEnum.CONCERT);
+            }});
+            setTicketPrice(BigDecimal.valueOf(12));
+            setName("Test event");
+            setDescription("great description");
+            setCoverPicture(new Picture());
+            setStartDateTime(LocalDateTime.now());
+            setAttendees(List.of(userToTest));
+            setComments(new ArrayList<>());
+            setCreationDateTime(LocalDateTime.now());
+        }};
+        userToTest.setHostedAndSignedEvents(List.of(currentEvent));
+        UserAllEvents currentUserAllEvents = userService.findCurrentUserAllEvents(userToTest.getUsername());
+        Assertions.assertTrue(currentUserAllEvents.getHostedEvents().size() == 1 && currentUserAllEvents.getSignedEvents().size() == 0);
+    }
+
+    @Test
+    void updateUser_ShouldReturnValid() {
+        byte[] test = new byte[0];
+        UserUpdateServiceModel userUpdateServiceModel = new UserUpdateServiceModel() {{
+            setAge(22);
+            setFirstName("Test-update");
+            setLastName("Test-update1");
+            setPicture(new MockMultipartFile("Pic", test));
+        }};
+        Mockito.when(mockedUserRepository.findByUsername(userToTest.getUsername())).thenReturn(Optional.of(userToTest));
+//        Mockito.when(mockedPictureService.isProfilePictureDefault(userToTest.getProfilePicture())).thenReturn(true);
+        try {
+            userService.updateUser(userUpdateServiceModel, userToTest.getUsername());
+        } catch (IOException e) {
+
+        }
+
+        Assertions.assertEquals(userToTest.getFirstName(), userUpdateServiceModel.getFirstName());
+        Assertions.assertEquals(userToTest.getLastName(), userUpdateServiceModel.getLastName());
+        Assertions.assertEquals(userToTest.getAge(), userUpdateServiceModel.getAge());
+
+    }
+
+    @Test
+    void updateUser_ShouldReturnValidNotEmptyPicture() {
+        byte[] test = new byte[12];
+        UserUpdateServiceModel userUpdateServiceModel = new UserUpdateServiceModel() {{
+            setAge(22);
+            setFirstName("Test-update");
+            setLastName("Test-update1");
+            setPicture(new MockMultipartFile("Pic", test));
+        }};
+        Mockito.when(mockedUserRepository.findByUsername(userToTest.getUsername())).thenReturn(Optional.of(userToTest));
+        Mockito.when(mockedPictureService.isProfilePictureDefault(userToTest.getProfilePicture())).thenReturn(true);
+        try {
+            userService.updateUser(userUpdateServiceModel, userToTest.getUsername());
+        } catch (IOException e) {
+
+        }
+
+        Assertions.assertEquals(userToTest.getFirstName(), userUpdateServiceModel.getFirstName());
+        Assertions.assertEquals(userToTest.getLastName(), userUpdateServiceModel.getLastName());
+        Assertions.assertEquals(userToTest.getAge(), userUpdateServiceModel.getAge());
+    }
+
+    @Test
+    void initAdminUser() {
+        Mockito.when(mockedUserRepository.count()).thenReturn(0L);
+        Mockito.when(mockedRoleService.findByRole(RoleEnum.ADMIN)).thenReturn(adminRole);
+        Mockito.when(mockedPictureService.getDefaultProfilePicture()).thenReturn(new Picture());
+        userService.initAdminUser();
+        Assertions.assertTrue(true);
+    }
+
 }

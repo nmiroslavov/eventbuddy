@@ -60,7 +60,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
 
-    private CommentForEventViewModel mapCommentToViewModel(Comment currentComment) {
+    @Override
+    public CommentForEventViewModel mapCommentToViewModel(Comment currentComment) {
         CommentForEventViewModel commentForEventViewModel = new CommentForEventViewModel();
         commentForEventViewModel.setCommentId(currentComment.getId());
         commentForEventViewModel.setUser(currentComment.getAuthor().getUsername());
