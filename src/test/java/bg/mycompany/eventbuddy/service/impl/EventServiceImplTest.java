@@ -7,10 +7,7 @@ import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
 import bg.mycompany.eventbuddy.model.view.EventDetailsViewModel;
 import bg.mycompany.eventbuddy.repository.EventRepository;
-import bg.mycompany.eventbuddy.service.EventCategoryService;
-import bg.mycompany.eventbuddy.service.EventService;
-import bg.mycompany.eventbuddy.service.PictureService;
-import bg.mycompany.eventbuddy.service.UserService;
+import bg.mycompany.eventbuddy.service.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +39,8 @@ class EventServiceImplTest {
     private EventCategoryService mockedEventCategoryService;
     @Mock
     private PictureService mockedPictureService;
+    @Mock
+    private CommentService commentService;
 
     private ModelMapper modelMapper = new ModelMapper();
 

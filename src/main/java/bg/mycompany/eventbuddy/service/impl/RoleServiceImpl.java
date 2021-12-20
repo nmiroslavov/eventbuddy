@@ -29,9 +29,9 @@ public class RoleServiceImpl implements RoleService {
             user.setRole(RoleEnum.USER);
 
             Role moderator = new Role();
-            user.setRole(RoleEnum.MODERATOR);
+            moderator.setRole(RoleEnum.MODERATOR);
 
-            roleRepository.saveAll(List.of(admin, user, moderator));
+            roleRepository.saveAll(List.of(admin, moderator, user));
         }
     }
 

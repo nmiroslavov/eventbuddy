@@ -6,10 +6,7 @@ import bg.mycompany.eventbuddy.model.service.EventAddServiceModel;
 import bg.mycompany.eventbuddy.model.service.EventUpdateServiceModel;
 import bg.mycompany.eventbuddy.model.view.*;
 import bg.mycompany.eventbuddy.repository.EventRepository;
-import bg.mycompany.eventbuddy.service.EventCategoryService;
-import bg.mycompany.eventbuddy.service.EventService;
-import bg.mycompany.eventbuddy.service.PictureService;
-import bg.mycompany.eventbuddy.service.UserService;
+import bg.mycompany.eventbuddy.service.*;
 import bg.mycompany.eventbuddy.web.exception.EventNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -177,11 +174,14 @@ public class EventServiceImpl implements EventService {
         eventRepository.save(currentEvent);
     }
 
-//    @Transactional
+    @Transactional
     @Override
     public void deleteEvent(Long eventId) {
         Event currentEvent = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
         boolean isDeleted = pictureService.deletePicture(currentEvent.getCoverPicture());
+        for (User attendee : currentEvent.getAttendees()) {
+            attendee.getHostedAndSignedEvents().remove(currentEvent);
+        }
         eventRepository.delete(currentEvent);
     }
 

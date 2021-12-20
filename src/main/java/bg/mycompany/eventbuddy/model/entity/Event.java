@@ -37,7 +37,7 @@ public class Event extends BaseEntity {
     @Column(name = "ticket_price", nullable = false)
     private BigDecimal ticketPrice;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "event")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "event", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
     public Event() {
     }
